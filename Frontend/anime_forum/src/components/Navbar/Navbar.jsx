@@ -19,7 +19,7 @@ const Navbar = () => {
 
     return (
         <header className="navbar">
-            <img src={assets.logo} alt="Logo" className="navbar-logo" />
+            <NavLink to={'/'}><img src={assets.logo} alt="Logo" className="navbar-logo" /></NavLink>
 
             <nav className="nav-links">
                 <LinkName to="/" label="HOME" />
@@ -32,8 +32,8 @@ const Navbar = () => {
                 <div className="profile-dropdown">
                     <img src={assets.profile_icon} alt="Profile" className="icon" />
                     <div className="dropdown-menu">
-                        <p className="dropdown-item">Login</p>
-                        <p className="dropdown-item">Register</p>
+                        <NavLink to={'/login'}><p className="dropdown-item">Login</p></NavLink>
+                        <NavLink to={'/register'}><p className="dropdown-item">Register</p></NavLink>
                     </div>
                     {/*<div className="dropdown-menu">*/}
                     {/*    <p className="dropdown-item">My Profile</p>*/}

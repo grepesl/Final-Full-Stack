@@ -3,7 +3,7 @@ CREATE TABLE `anime_forum`.`users` (
    `uuid` VARCHAR(45) NOT NULL,
    `username` VARCHAR(45) NOT NULL,
    `email` VARCHAR(45) NOT NULL,
-   `password` VARCHAR(45) NOT NULL,
+   `password` VARCHAR(100) NOT NULL,
    `created_at` DATETIME NOT NULL DEFAULT  CURRENT_TIMESTAMP,
    `updated_at` DATETIME NOT NULL DEFAULT  CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),
