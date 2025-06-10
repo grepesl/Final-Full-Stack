@@ -1,0 +1,100 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+
+.footer {
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 30px 20px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    text-align: center;
+}
+
+.description p {
+    max-width: 320px;
+    margin: 0 auto;
+    color: #555;
+}
+
+.social-icons a {
+    margin: 0 12px;
+    color: #333;
+    font-size: 26px;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #007bff;
+}
+
+.footer-nav-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.copyright p {
+    color: #777;
+    font-size: 13px;
+    margin: 0;
+}
+
+@media (min-width: 640px) {
+    .footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 30px 40px;
+        text-align: left;
+    }
+
+    .footer-section {
+        text-align: left;
+    }
+
+    .description {
+        flex: 1 1 30%;
+    }
+
+    .social-icons {
+        flex: 1 1 20%;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .nav-links {
+        flex: 1 1 30%;
+        justify-content: flex-start;
+    }
+
+    .copyright {
+        flex: 1 1 20%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+}

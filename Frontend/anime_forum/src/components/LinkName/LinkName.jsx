@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
 
-const LinkName_ = ({ to, label }) => {
+const LinkName = ({ to, label }) => {
     return (
         <div>
             <NavLink to={to} className="nav-link">
@@ -11,4 +11,4 @@ const LinkName_ = ({ to, label }) => {
         </div>
     )
 }
-export default LinkName_
+export default LinkName
