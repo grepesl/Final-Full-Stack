@@ -1,5 +1,7 @@
 // controllers/userController.js
 import database from './../database.js';
+import { v4 as generateID } from 'uuid';
+import bcrypt from 'bcrypt';
 
 export const getUsers = async (req, res) => {
     try {
@@ -17,6 +19,8 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
     const { id } = req.params
 
     try {
@@ -33,12 +37,31 @@ export const getUserById = async (req, res) => {
     }
 };
 
-export const createUser = (req, res) => {
-    const user = req.body;
-    res.send(`Create user: ${JSON.stringify(user)}`);
+export const  registerUser = async (req, res) => {
+    try {
+        const user = req.body;
+
+        const uuid = generateID();
+        const password = bcrypt.hashSync(user.password, 10);
+
+        const data = await database.promise().query(
+            'INSERT INTO `users` (`uuid`, `username`, `email`, `password`) VALUES (?,?,?,?)',
+            [uuid, user.username, user.email, password]
+        );
+
+        res.status(200).json({ status: 'OK' });
+    } catch (err) {
+        console.log(err);
+
+        if (err.sqlState === '23000'){
+            res.status(500).json({ message: 'Username or email already exist' });
+        } else {
+            res.status(500).json({ message: err });
+        }
+    }
 };
 
-export const updateUser = (req, res) => {
+export const updateUser = async (req, res) => {
     const id = req.params.id;
     const user = req.body;
     res.send(`Update user with ID: ${id}`);
