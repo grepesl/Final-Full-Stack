@@ -32,10 +32,10 @@ const Register = () => {
                 .required('Būtinas laukelis')
                 .trim(),
             password: Yup.string()
-                .matches(
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/,
-                    'Slaptažodis privalo turėti bent 1 didžiąją, bent 1 mažąją raidę, specialų simbolį (@$!%*?&), bent 1 skaičių ir būtų ne trumpesnis nei 8 simbolių ir ne ilgesnis nei 25 simbolių.'
-                )
+                // .matches(
+                //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/,
+                //     'Slaptažodis privalo turėti bent 1 didžiąją, bent 1 mažąją raidę, specialų simbolį (@$!%*?&), bent 1 skaičių ir būtų ne trumpesnis nei 8 simbolių ir ne ilgesnis nei 25 simbolių.'
+                // )
                 .required('Būtinas laukelis')
                 .trim(),
             passwordRepeat: Yup.string()
