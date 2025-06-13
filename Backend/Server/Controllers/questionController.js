@@ -4,7 +4,12 @@ import database from './../database.js';
 export const getQuestions = async (req, res) => {
     try {
         const data = await database.promise().query(
-            `SELECT * FROM questions`
+            `SELECT q.*,
+                    u.username,
+                    (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) as answers_count,
+                    5                                                           as likes_count
+             FROM questions q
+                      LEFT JOIN users u ON u.uuid = q.user_uuid `
         );
         res.status(200).json({
             questions: data[0],
@@ -21,7 +26,13 @@ export const getQuestionById = async (req, res) => {
 
     try {
         const data = await database.promise().query(
-            `SELECT * FROM questions WHERE uuid = ?`,[id]
+            `SELECT q.*,
+                    u.username,
+                    (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) as answers_count,
+                    5                                                           as likes_count
+             FROM questions q
+                      LEFT JOIN users u ON u.uuid = q.user_uuid 
+              WHERE q.uuid = ?`,[id]
         );
         res.status(200).json({
             question: data[0][0],
