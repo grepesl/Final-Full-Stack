@@ -41,5 +41,4 @@ CREATE TABLE `anime_forum`.`likes` (
    `value` INT NOT NULL,
    PRIMARY KEY (`id`),
    UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-   UNIQUE INDEX `answer_uuid_UNIQUE` (`answer_uuid` ASC) VISIBLE,
-   UNIQUE INDEX `user_uuid_UNIQUE` (`user_uuid` ASC) VISIBLE);
+   UNIQUE KEY `unique_user_answer` (`user_uuid`, `answer_uuid`);

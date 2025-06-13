@@ -8,7 +8,7 @@ export default function Footer() {
             <div className="footer-container">
 
                 <div className="footer-section description">
-                    <p>Where anime fans ask, answer, and connect 🌸</p>
+                    <p>Where anime fans ask, answer, and connect</p>
                 </div>
 
                 <div className="footer-section social-icons">
