@@ -3,15 +3,20 @@ import { assets } from '../../assets/assets.js';
 import { NavLink } from 'react-router-dom';
 import './Navbar.css';
 import  LinkName  from '../LinkName/LinkName.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false);
+    const { user, logout } = useAuth();
+    console.log('Navbar user:', user);
 
     const PhoneLinkName = ({ to, label }) => (
         <NavLink
             to={to}
             onClick={() => setVisible(false)}
-            className="phone-nav-link"
+            className={({ isActive }) =>
+                isActive ? 'nav-link active phone-nav-link' : 'nav-link phone-nav-link'
+            }
         >
             {label}
         </NavLink>
@@ -32,14 +37,20 @@ const Navbar = () => {
                 <div className="profile-dropdown">
                     <img src={assets.profile_icon} alt="Profile" className="icon" />
                     <div className="dropdown-menu">
-                        <NavLink to={'/login'}><p className="dropdown-item">Login</p></NavLink>
-                        <NavLink to={'/register'}><p className="dropdown-item">Register</p></NavLink>
+                        {user ? (
+                            <>
+                                <NavLink to="/profile">
+                                    <p className="dropdown-item">{user.username}</p>
+                                </NavLink>
+                                <p className="dropdown-item" onClick={logout}>Logout</p>
+                            </>
+                        ) : (
+                            <>
+                                <NavLink to="/login"><p className="dropdown-item">Login</p></NavLink>
+                                <NavLink to="/register"><p className="dropdown-item">Register</p></NavLink>
+                            </>
+                        )}
                     </div>
-                    {/*<div className="dropdown-menu">*/}
-                    {/*    <p className="dropdown-item">My Profile</p>*/}
-                    {/*    <p className="dropdown-item">Orders</p>*/}
-                    {/*    <p className="dropdown-item">Logout</p>*/}
-                    {/*</div>*/}
                 </div>
 
                 <img
@@ -50,7 +61,7 @@ const Navbar = () => {
                 />
             </div>
 
-            {/*Sidebar menu for small screens*/}
+            {/* Sidebar menu for small screens */}
             <aside className={`mobile-menu ${visible ? 'open' : ''}`}>
                 <div className="mobile-menu-content">
                     <div className="mobile-back" onClick={() => setVisible(false)}>

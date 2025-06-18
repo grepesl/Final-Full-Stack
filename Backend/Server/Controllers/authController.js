@@ -33,8 +33,9 @@ export const login = async (req, res) => {
             );
 
             return res.status(200).json({
-                message: "OK",
-                jwt: token
+                status: "OK",
+                jwt: token,
+                user: databaseUser[0][0],
             });
         } else {
             return res.status(401).json({ message: "Neteisingi duomenys" });
