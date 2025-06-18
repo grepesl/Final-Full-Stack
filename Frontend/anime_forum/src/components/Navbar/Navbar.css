@@ -1,20 +1,23 @@
-/* Mobile First Styles */
-
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 12px 20px;
     font-weight: 500;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fcfbfa;
+    border-bottom: 1px solid #e5e7eb;
 }
 
+
 .navbar-logo {
-    width: 140px;
+    width: 100px;
 }
 
 .nav-links {
-    display: none; /* paslėpta mobiliame */
+    display: none;
 }
 
 .nav-link {
@@ -95,7 +98,7 @@
 .menu-icon {
     width: 20px;
     cursor: pointer;
-    display: block; /* rodomas mobiliame */
+    display: block;
 }
 
 /* Mobile Sidebar */
@@ -147,6 +150,32 @@
 .phone-nav-link:hover {
     background-color: #f9fafb;
 }
+
+/*////////*/
+
+.nav-link {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 500;
+    padding-bottom: 4px;
+    position: relative;
+}
+
+.nav-link.active {
+    color: #e11d48; /* raudona kaip tavo logo */
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #e11d48; /* raudonas brūkšnys po aktyvia nuoroda */
+    border-radius: 2px;
+}
+
 
 /* Larger screens (640px and up) */
 @media (min-width: 640px) {

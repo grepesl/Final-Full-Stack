@@ -8,13 +8,6 @@ const SingleQuestion = () => {
     const [question, setQuestion] = useState([]);
     const [answers, setAnswers] = useState()
 
-    const comments = {
-        id: 1,
-        items: []
-    }
-    const [commentsData, setCommentsData] = useState()
-
-
     useEffect(() => {
         const fetchQuestion = async () => {
             const params = new URLSearchParams();
@@ -58,52 +51,60 @@ const SingleQuestion = () => {
     }, [question_id]);
 
     return (
-        <div>
-            {/*<h1>All Questions</h1>*/}
-            <div>
-                    <div>
-                        <div>
-                            <span>👤 {question.username}</span>
-                            <h2>{question.title}</h2>
-                            <p>
-                                {question.content}
-                            </p>
-                            {/*<ul>*/}
-                            {/*    {question.tags.split(",").map((tag, index) => (*/}
-                            {/*        <li key={index}>{tag.trim()}</li>*/}
-                            {/*    ))}*/}
-                            {/*</ul>*/}
-                            <div>
-                                <span>
-                                    <i className="bi bi-caret-up"></i>
-                                    {question.likes_count}
-                                    <i className="bi bi-caret-down"></i>
-                                </span>
-                                <span>💬 {question.answers_count}</span>
+        <div className="single-question-container">
+            <button className="back-button" onClick={() => window.history.back()}>
+                ← Back to Home
+            </button>
+
+            <div className="question-header">
+                <span className="question-user">👤 {question.username}</span>
+                <div className="question-actions">
+                    <button className="action-button">Update</button>
+                    <button className="action-button">Delete</button>
+                </div>
+            </div>
+
+            <h2 className="question-title">{question.title}</h2>
+
+            <p className="question-content">{question.content}</p>
+
+            {/*<ul className="question-tags">*/}
+            {/*    {question.tags.split(",").map((tag, index) => (*/}
+            {/*        <li key={index} className="tag">{tag.trim()}</li>*/}
+            {/*    ))}*/}
+            {/*</ul>*/}
+
+            <div className="question-meta">
+                <div className="vote-box">
+                    <i className="bi bi-caret-up-fill vote-icon upvote"></i>
+                    <span className="vote-count">{question.likes_count}</span>
+                    <i className="bi bi-caret-down-fill vote-icon downvote"></i>
+                </div>
+                <span className="answers-count">💬 {question.answers_count}</span>
+            </div>
+
+            <div className="answers-section">
+                <h3 className="answers-title">Atsakymai</h3>
+
+                <div className="answer-form">
+                    <textarea placeholder="Įvesk atsakymą..." className="answer-input"></textarea>
+                    <button className="submit-button">Submit</button>
+                </div>
+
+                {(answers === undefined || answers.length === 0) ? (
+                    <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>
+                ) : (
+                    answers.map((answer, index) => (
+                        <div key={index} className="answer">
+                            <p className="answer-content">{answer.content}</p>
+                            <p className="answer-user">👤 {answer.username}</p>
+                            <div className="answer-actions">
+                                <button className="answer-button">Update</button>
+                                <button className="answer-button">Delete</button>
                             </div>
-                            <div>
-                                <h3>Atsakymai</h3>
-                                {
-                                    //answers == nuull
-                                    //answers ==undefiend
-
-                                    (answers === undefined || answers.length === 0) ? (
-                                    <p>Šis klausimas kol kas neturi atsakymų.</p>
-                                ) : (
-                                    answers.map((answer, index) => (
-                                        <div key={index} className="answer">
-                                            <p>{answer.content}</p>
-                                            <p>👤 {answer.username}</p>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-
-                            {/*<Comment comment={commentsData} />*/}
-
-
                         </div>
-                    </div>
+                    ))
+                )}
             </div>
         </div>
     )

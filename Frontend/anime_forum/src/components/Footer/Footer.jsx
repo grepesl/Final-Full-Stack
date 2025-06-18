@@ -18,7 +18,6 @@ export default function Footer() {
 
                 <nav className="footer-section footer-nav-links">
                     <NavLink to='/' className="footer-link">Home</NavLink>
-                    <NavLink to='/profile' className="footer-link">Profile</NavLink>
                     <NavLink to='/contact' className="footer-link">Contact</NavLink>
                 </nav>
 

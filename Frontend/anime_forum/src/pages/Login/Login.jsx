@@ -4,10 +4,12 @@ import * as Yup from 'yup';
 import './Login.css';
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import { useAuth } from '../../context/AuthContext.jsx';
 import bcrypt from 'bcryptjs';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const formik = useFormik({
         initialValues: {
@@ -47,7 +49,17 @@ const Login = () => {
 
                 if (data.status === 'OK') {
                     toast.success("Login successfully");
-                    setTimeout(() => navigate('/home'), 1000);
+
+                    // Saugoma į localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    console.log('user logged in');
+                    console.log(localStorage.getItem('user'));
+                    // Nustatoma user globaliam kontekste
+                    setUser(data.user); // ← jei turi useAuth()
+
+
+                    setTimeout(() => navigate('/'), 1000);
                 } else {
                     toast.error("Login failed - " + data.message);
                 }
@@ -58,6 +70,7 @@ const Login = () => {
             }
         }
     });
+
 
     return (
         <div className="login-form-container">
