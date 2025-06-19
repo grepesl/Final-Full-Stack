@@ -6,6 +6,7 @@ import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal
 import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
 import { useNavigate } from 'react-router-dom';
 import {useAuth} from "../context/AuthContext.jsx";
+import EditedSymbol from "../components/EditedSymbol.jsx";
 
 // TODO parodyt kad buvo updated kl ir ats
 
@@ -191,6 +192,7 @@ const SingleQuestion = () => {
 
             <div className="question-header">
                 <span className="question-user">👤 {question.username}</span>
+                <EditedSymbol isNotEdited={question.updated_at === null} />
                 <div className="question-actions">
                     <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
                     <button className="action-button" onClick={handleDelete}>Delete</button>
@@ -230,9 +232,9 @@ const SingleQuestion = () => {
                     <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>
                 ) : (
                     answers.map((answer, index) => (
-                        //answer.updated_at === undefined || null
 
                         <div key={index} className="answer">
+                            <EditedSymbol isNotEdited={answer.updated_at === null} />
                             <p className="answer-content">{answer.content}</p>
                             <p className="answer-user">👤 {answer.username}</p>
                             <div className="answer-actions">

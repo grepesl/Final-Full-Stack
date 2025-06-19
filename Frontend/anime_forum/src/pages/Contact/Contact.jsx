@@ -10,7 +10,7 @@ const Contact = () => {
             <div className="contact-details">
                 <div className="contact-card">
                     <h2>📧 Email</h2>
-                    <p>support@animeforum.com</p>
+                    <p>support@naniforum.com</p>
                 </div>
 
                 <div className="contact-card">
