@@ -1,8 +1,33 @@
 import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import "./CreateQuestionModal.css";
 
 const CreateQuestionModal = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const initialValues = {
+        title: "",
+        content: "",
+        tags: ""
+    };
+
+    const validationSchema = Yup.object({
+        title: Yup.string()
+            .required("Pavadinimas privalomas")
+            .min(5, "Per trumpas pavadinimas"),
+        content: Yup.string()
+            .required("Turinys privalomas")
+            .min(10, "Per trumpas klausimas"),
+        tags: Yup.string()
+            .required("Įveskite bent vieną tag'ą")
+    });
+
+    const handleSubmit = (values, { resetForm }) => {
+        console.log("Formos duomenys:", values);
+        resetForm();
+        setIsOpen(false);
+    };
 
     return (
         <div className="padding-button">
@@ -14,15 +39,51 @@ const CreateQuestionModal = () => {
                 <div className="modal-overlay" onClick={() => setIsOpen(false)}>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         <h2>Sukurti naują klausimą</h2>
-                        <input type="text" placeholder="Pavadinimas" />
-                        <textarea placeholder="Klausimo turinys..."></textarea>
-                        <input type="text" placeholder="Temos / tag'ai (atskirti kableliais)" />
-                        <div className="modal-buttons">
-                            <button className="submit-button">Pateikti</button>
-                            <button className="cancel-button" onClick={() => setIsOpen(false)}>
-                                Atšaukti
-                            </button>
-                        </div>
+
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validationSchema}
+                            onSubmit={handleSubmit}
+                        >
+                            <Form>
+                                <div className="form-group">
+                                    <Field
+                                        type="text"
+                                        name="title"
+                                        placeholder="Pavadinimas"
+                                        className="form-input"
+                                    />
+                                    <ErrorMessage name="title" component="div" className="error" />
+                                </div>
+
+                                <div className="form-group">
+                                    <Field
+                                        as="textarea"
+                                        name="content"
+                                        placeholder="Klausimo turinys..."
+                                        className="form-textarea"
+                                    />
+                                    <ErrorMessage name="content" component="div" className="error" />
+                                </div>
+
+                                <div className="form-group">
+                                    <Field
+                                        type="text"
+                                        name="tags"
+                                        placeholder="Temos / tag'ai (atskirti kableliais)"
+                                        className="form-input"
+                                    />
+                                    <ErrorMessage name="tags" component="div" className="error" />
+                                </div>
+
+                                <div className="modal-buttons">
+                                    <button type="submit" className="submit-button">Pateikti</button>
+                                    <button type="button" className="cancel-button" onClick={() => setIsOpen(false)}>
+                                        Atšaukti
+                                    </button>
+                                </div>
+                            </Form>
+                        </Formik>
                     </div>
                 </div>
             )}
