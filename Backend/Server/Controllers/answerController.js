@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 export const getAnswers = async (req, res) => {
     try {
         const data = await database.promise().query(
-            `SELECT * FROM answers`
+            `SELECT a.*, u.username FROM answers a LEFT JOIN users u ON u.uuid = a.user_uuid`
         );
         res.status(200).json({
             answers: data[0],

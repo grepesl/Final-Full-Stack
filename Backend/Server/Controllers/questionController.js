@@ -87,17 +87,7 @@ export const deleteQuestion = async (req, res) => {
     const { id } = req.params
 
     try {
-        // Pirma patikrink, ar atsakymas egzistuoja
-        const [check] = await database.promise().query(
-            `SELECT * FROM questions WHERE uuid = ?`,
-            [id]
-        );
 
-        if (check.length === 0) {
-            return res.status(404).json({ message: "Klausimas nerastas." });
-        }
-
-        // Trinti atsakymą
         await database.promise().query(
             `DELETE FROM questions WHERE uuid = ?`,
             [id]

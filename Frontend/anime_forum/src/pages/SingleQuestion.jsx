@@ -4,6 +4,7 @@ import './SingleQuestion.css';
 import {toast} from "react-toastify";
 import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal.jsx";
 import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
+import { useNavigate } from 'react-router-dom';
 
 // TODO parodyt kad buvo updated kl ir ats
 
@@ -14,6 +15,9 @@ const SingleQuestion = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAnswer, setEditingAnswer] = useState(null);
     const [editingQuestion, setEditingQuestion] = useState(null);
+    // const [deletingAnswer, setDeletingAnswer] = useState()
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchAnswers();
@@ -62,6 +66,7 @@ const SingleQuestion = () => {
             fetchAnswers();
         }
 
+        // setDeletingAnswer(null); // bandau reloaudint
         setEditingAnswer(null);
     }
 
@@ -73,6 +78,73 @@ const SingleQuestion = () => {
         setEditingQuestion(null);
     }
 
+    // DELETE ANSWER RELOAD
+
+    // const onDeleteAnswerClose = (isSuccess) => {
+    //     if (isSuccess) {
+    //         fetchAnswers();
+    //     }
+    //     setIsModalOpen(false)
+    //     setEditingQuestion(null);
+    // }
+
+    // DELETE QUESTION
+
+    const handleDelete = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/questions/${question.uuid}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const data = await res.json();
+
+            console.log("Delete response:", data);
+
+            if (res.ok) {
+                toast.success("Klausimas sėkmingai ištrintas!");
+                // onClose(true); // uždaro modalą ir informuoja apie sėkmę
+                navigate('/');
+            } else {
+                toast.error("Nepavyko ištrinti klausimo: " + data.message);
+                onClose(false);
+            }
+
+        } catch (error) {
+            console.error('Klaida trynimo metu:', error);
+            toast.error('Įvyko tinklo klaida');
+            // onClose(false);
+        }
+    };
+
+    const handleDeleteAnswer = async (index) => {
+        try {
+            const res = await fetch(`http://localhost:3000/answers/${answers[index].uuid}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success("Atsakymas sėkmingai ištrintas!");
+                fetchAnswers();
+            } else {
+                toast.error("Nepavyko ištrinti atsakymo: " + data.message);
+            }
+
+        } catch (error) {
+            toast.error("Įvyko tinklo klaida");
+            console.error(error);
+        }
+    };
+
     return (
         <div className="single-question-container">
             <button className="back-button" onClick={() => window.history.back()}>
@@ -83,7 +155,7 @@ const SingleQuestion = () => {
                 <span className="question-user">👤 {question.username}</span>
                 <div className="question-actions">
                     <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
-                    <button className="action-button">Delete</button>
+                    <button className="action-button" onClick={() => handleDelete}>Delete</button>
                 </div>
             </div>
 
@@ -120,6 +192,8 @@ const SingleQuestion = () => {
                     <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>
                 ) : (
                     answers.map((answer, index) => (
+                        //answer.updated_at === undefined || null
+
                         <div key={index} className="answer">
                             <p className="answer-content">{answer.content}</p>
                             <p className="answer-user">👤 {answer.username}</p>
@@ -127,7 +201,7 @@ const SingleQuestion = () => {
                                 <button className="answer-button" onClick={() => setEditingAnswer(answer)}>
                                     Update
                                 </button>
-                                <button className="answer-button">Delete</button>
+                                <button className="answer-button" onClick={() => handleDeleteAnswer(index)}>Delete</button>
                             </div>
                         </div>
                     ))
