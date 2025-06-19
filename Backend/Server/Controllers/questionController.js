@@ -59,9 +59,31 @@ export const getQuestionById = async (req, res) => {
     }
 };
 
-export const createQuestion = (req, res) => {
-    const user = req.body;
-    res.send(`Create user: ${JSON.stringify(user)}`);
+// id` INT NOT NULL AUTO_INCREMENT,
+//    `uuid` VARCHAR(45) NOT NULL,
+//    `user_uuid` VARCHAR(45) NOT NULL,
+//    `title` VARCHAR(255) NOT NULL,
+//    `content` VARCHAR(255) NOT NULL,
+//    `tags` VARCHAR(255) NOT NULL,
+//    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//    `updated_at` DATETIME,
+
+export const createQuestion = async (req, res) => {
+    const question = req.body;
+    const uuid = generateID();
+    try {
+
+        const data = await database.promise().query(
+            'INSERT INTO `questions` (`uuid`, `user_uuid`, `title`, `content`, `tags`) VALUES (?,?,?,?,?)',
+            [uuid, question.user_uuid, question.title, question.content, question.tags]
+        );
+
+        res.status(200).json({ status: 'OK' });
+    } catch (err) {
+        console.log(err);
+
+        res.status(500).json({ message: err });
+    }
 };
 
 export const updateQuestion = async (req, res) => {

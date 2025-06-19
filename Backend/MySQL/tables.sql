@@ -27,6 +27,7 @@ CREATE TABLE `anime_forum`.`answers` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `uuid` VARCHAR(45) NOT NULL,
     `question_uuid` VARCHAR(45) NOT NULL,
+    `answer_uuid` VARCHAR(45),
     `user_uuid` VARCHAR(45) NOT NULL,
     `content` VARCHAR(45) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

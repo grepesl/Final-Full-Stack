@@ -5,6 +5,7 @@ import {toast} from "react-toastify";
 import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal.jsx";
 import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from "../context/AuthContext.jsx";
 
 // TODO parodyt kad buvo updated kl ir ats
 
@@ -16,6 +17,8 @@ const SingleQuestion = () => {
     const [editingAnswer, setEditingAnswer] = useState(null);
     const [editingQuestion, setEditingQuestion] = useState(null);
     // const [deletingAnswer, setDeletingAnswer] = useState()
+    const { user, logout } = useAuth()
+    const [answerContent, setAnswerContent] = useState();
 
     const navigate = useNavigate();
 
@@ -145,6 +148,41 @@ const SingleQuestion = () => {
         }
     };
 
+    const handleAddAsnwer = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/answers/`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    question_uuid: question_id,
+                    user_uuid: user.uuid,
+                    content: answerContent
+                })
+            });
+
+            const data = await res.json();
+
+            console.log("CREATE asnwer response:", data);
+
+            if (res.ok) {
+                toast.success("Klausimas sėkmingai ištrintas!");
+                // onClose(true); // uždaro modalą ir informuoja apie sėkmę
+                //navigate('/');
+            } else {
+                toast.error("Nepavyko ištrinti klausimo: " + data.message);
+                onClose(false);
+            }
+
+        } catch (error) {
+            console.error('Klaida trynimo metu:', error);
+            toast.error('Įvyko tinklo klaida');
+            // onClose(false);
+        }
+    };
+
     return (
         <div className="single-question-container">
             <button className="back-button" onClick={() => window.history.back()}>
@@ -155,7 +193,7 @@ const SingleQuestion = () => {
                 <span className="question-user">👤 {question.username}</span>
                 <div className="question-actions">
                     <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
-                    <button className="action-button" onClick={() => handleDelete}>Delete</button>
+                    <button className="action-button" onClick={handleDelete}>Delete</button>
                 </div>
             </div>
 
@@ -184,8 +222,8 @@ const SingleQuestion = () => {
                 <h3 className="answers-title">Atsakymai</h3>
 
                 <div className="answer-form">
-                    <textarea placeholder="Įvesk atsakymą..." className="answer-input"></textarea>
-                    <button className="submit-button">Submit</button>
+                    <textarea placeholder="Įvesk atsakymą..." className="answer-input" onChange={(e) => setAnswerContent(e.target.value)}></textarea>
+                    <button className="submit-button" onClick={handleAddAsnwer}>Submit</button>
                 </div>
 
                 {(answers === undefined || answers.length === 0) ? (
