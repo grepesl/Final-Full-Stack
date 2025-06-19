@@ -2,53 +2,76 @@ import React, {useEffect, useState} from 'react'
 import {NavLink, useParams} from "react-router-dom";
 import './SingleQuestion.css';
 import {toast} from "react-toastify";
+import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal.jsx";
+import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
+
+// TODO parodyt kad buvo updated kl ir ats
 
 const SingleQuestion = () => {
     const { question_id } = useParams();
     const [question, setQuestion] = useState([]);
     const [answers, setAnswers] = useState()
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingAnswer, setEditingAnswer] = useState(null);
+    const [editingQuestion, setEditingQuestion] = useState(null);
 
     useEffect(() => {
-        const fetchQuestion = async () => {
-            const params = new URLSearchParams();
-
-            try {
-                const res = await fetch(`http://localhost:3000/questions/${question_id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await res.json();
-                setQuestion(data.question);
-            } catch (error) {
-                console.error('Fetch klaida:', error);
-                toast.error('Įvyko tinklo klaida');
-            }
-        };
-
-        const fetchAnswers = async () => {
-            try {
-                const res = await fetch(`http://localhost:3000/answers`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await res.json();
-                const filtered = data.answers.filter((answer) => answer.question_uuid === question_id)
-                setAnswers(filtered);
-            } catch (error) {
-                console.error('Fetch klaida:', error);
-                toast.error('Įvyko tinklo klaida');
-            }
-        };
-
         fetchAnswers();
         fetchQuestion();
     }, [question_id]);
+
+    const fetchQuestion = async () => {
+        const params = new URLSearchParams();
+
+        try {
+            const res = await fetch(`http://localhost:3000/questions/${question_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            setQuestion(data.question);
+        } catch (error) {
+            console.error('Fetch klaida:', error);
+            toast.error('Įvyko tinklo klaida');
+        }
+    };
+
+    const fetchAnswers = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/answers`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            const filtered = data.answers.filter((answer) => answer.question_uuid === question_id)
+            setAnswers(filtered);
+        } catch (error) {
+            console.error('Fetch klaida:', error);
+            toast.error('Įvyko tinklo klaida');
+        }
+    };
+
+    const onEditAnswerClose = (isSuccess) => {
+        if (isSuccess) {
+            fetchAnswers();
+        }
+
+        setEditingAnswer(null);
+    }
+
+    const onEditQuestionClose = (isSuccess) => {
+        if (isSuccess) {
+            fetchQuestion();
+        }
+        setIsModalOpen(false)
+        setEditingQuestion(null);
+    }
 
     return (
         <div className="single-question-container">
@@ -59,7 +82,7 @@ const SingleQuestion = () => {
             <div className="question-header">
                 <span className="question-user">👤 {question.username}</span>
                 <div className="question-actions">
-                    <button className="action-button">Update</button>
+                    <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
                     <button className="action-button">Delete</button>
                 </div>
             </div>
@@ -67,6 +90,8 @@ const SingleQuestion = () => {
             <h2 className="question-title">{question.title}</h2>
 
             <p className="question-content">{question.content}</p>
+
+            {/*TODO pataisyt, nes neveikia*/}
 
             {/*<ul className="question-tags">*/}
             {/*    {question.tags.split(",").map((tag, index) => (*/}
@@ -99,13 +124,26 @@ const SingleQuestion = () => {
                             <p className="answer-content">{answer.content}</p>
                             <p className="answer-user">👤 {answer.username}</p>
                             <div className="answer-actions">
-                                <button className="answer-button">Update</button>
+                                <button className="answer-button" onClick={() => setEditingAnswer(answer)}>
+                                    Update
+                                </button>
                                 <button className="answer-button">Delete</button>
                             </div>
                         </div>
                     ))
                 )}
             </div>
+            <EditQuestionModal
+                isOpen={isModalOpen}
+                onClose={onEditQuestionClose}
+                question={question}
+            />
+            {editingAnswer && (
+                <EditAnswerModal
+                    answer={editingAnswer}
+                    onClose={onEditAnswerClose}
+                />
+            )}
         </div>
     )
 }

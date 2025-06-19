@@ -37,7 +37,7 @@ export const getUserById = async (req, res) => {
     }
 };
 
-export const  registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     try {
         const user = req.body;
 
@@ -64,5 +64,48 @@ export const  registerUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const id = req.params.id;
     const user = req.body;
-    res.send(`Update user with ID: ${id}`);
+
+    try {
+
+        const data = await database.promise().query(
+            'INSERT INTO `users` (`uuid`, `username`, `email`, `password`) VALUES (?,?,?,?)',
+            [uuid, user.username, user.email, password]
+        );
+
+        res.status(200).json({ status: 'OK' });
+    } catch (err) {
+        console.log(err);
+
+        if (err.sqlState === '23000'){
+            res.status(500).json({ message: "Profile could not be updated" });
+        } else {
+            res.status(500).json({ message: err });
+        }
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        // Pirma patikrink, ar atsakymas egzistuoja
+        const [check] = await database.promise().query(
+            `SELECT * FROM users WHERE uuid = ?`,
+            [id]
+        );
+
+        if (check.length === 0) {
+            return res.status(404).json({ message: "Nepavyko istrinti paskyros" });
+        }
+
+        // Trinti atsakymą
+        await database.promise().query(
+            `DELETE FROM users WHERE uuid = ?`,
+            [id]
+        );
+
+        res.status(200).json({ message: "Paskyra sėkmingai ištrintas." });
+    } catch (err) {
+        res.status(500).json({ message: "Serverio klaida", error: err });
+    }
 }

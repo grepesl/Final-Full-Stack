@@ -8,11 +8,14 @@ import SingleQuestion from "./pages/SingleQuestion.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import Contact from "./pages/Contact/Contact.jsx";
+import {ToastContainer} from "react-toastify";
 
 const App = () => {
+
     return (
         <div>
                 <Navbar />
+                <ToastContainer position="top-right" autoClose={2000} />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<Contact />} />

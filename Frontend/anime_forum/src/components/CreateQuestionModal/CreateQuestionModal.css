@@ -101,3 +101,27 @@
 /*        padding-left: 80px;*/
 /*    }*/
 /*}*/
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+}
