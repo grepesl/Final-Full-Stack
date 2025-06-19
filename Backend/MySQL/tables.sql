@@ -4,8 +4,8 @@ CREATE TABLE `anime_forum`.`users` (
    `username` VARCHAR(45) NOT NULL,
    `email` VARCHAR(45) NOT NULL,
    `password` VARCHAR(100) NOT NULL,
-   `created_at` DATETIME NOT NULL DEFAULT  CURRENT_TIMESTAMP,
-   `updated_at` DATETIME NOT NULL DEFAULT  CURRENT_TIMESTAMP,
+   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),
    UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC) VISIBLE,
    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
@@ -19,7 +19,7 @@ CREATE TABLE `anime_forum`.`questions` (
    `content` VARCHAR(255) NOT NULL,
    `tags` VARCHAR(255) NOT NULL,
    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   `updated_at` DATETIME,
    PRIMARY KEY (`id`),
    UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC) VISIBLE);
 
@@ -30,7 +30,7 @@ CREATE TABLE `anime_forum`.`answers` (
     `user_uuid` VARCHAR(45) NOT NULL,
     `content` VARCHAR(45) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC) VISIBLE);
 
