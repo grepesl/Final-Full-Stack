@@ -23,8 +23,9 @@ export const getQuestions = async (req, res) => {
         const totalCount = totalCounts[0].totalCount;
 
         res.status(200).json({
-            questions,
-            totalCount,
+            status: 200,
+            questions: questions,
+            totalCount: totalCount,
         });
     } catch (err) {
         console.log(err);
@@ -49,6 +50,7 @@ export const getQuestionById = async (req, res) => {
               WHERE q.uuid = ?`,[id]
         );
         res.status(200).json({
+            status: 200,
             question: data[0][0],
         });
     } catch (err) {
@@ -58,15 +60,6 @@ export const getQuestionById = async (req, res) => {
         });
     }
 };
-
-// id` INT NOT NULL AUTO_INCREMENT,
-//    `uuid` VARCHAR(45) NOT NULL,
-//    `user_uuid` VARCHAR(45) NOT NULL,
-//    `title` VARCHAR(255) NOT NULL,
-//    `content` VARCHAR(255) NOT NULL,
-//    `tags` VARCHAR(255) NOT NULL,
-//    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-//    `updated_at` DATETIME,
 
 export const createQuestion = async (req, res) => {
     const question = req.body;
@@ -115,7 +108,7 @@ export const deleteQuestion = async (req, res) => {
             [id]
         );
 
-        res.status(200).json({ message: "Klausimas sėkmingai ištrintas." });
+        res.status(200).json({ status: 200 });
     } catch (err) {
         res.status(500).json({ message: "Serverio klaida", error: err });
     }

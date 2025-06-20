@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./CreateQuestionModal.css";
 import {toast} from "react-toastify";
 import {useAuth} from "../../context/AuthContext.jsx";
+import {NavLink} from "react-router-dom";
 
 const CreateQuestionModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -81,9 +82,16 @@ const CreateQuestionModal = () => {
 
     return (
         <div className="padding-button">
-            <button className="create-question-button" onClick={() => setIsOpen(true)}>
-                ➕ Sukurti klausimą
-            </button>
+
+            {user ? (
+                <>
+                    <button className="create-question-button" onClick={() => setIsOpen(true)}>
+                        ➕ Sukurti klausimą
+                    </button>
+                </>
+            ) : (
+                ''
+            )}
 
             {isOpen && (
                 <div className="modal-overlay" onClick={() => setIsOpen(false)}>

@@ -3,6 +3,8 @@ import './Questions.css';
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../Pagination/Pagination.jsx";
+import {useAuth} from "../../context/AuthContext.jsx";
+import {safeRequest} from "../../utils/api.js";
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
@@ -10,25 +12,26 @@ const Questions = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 2;
+    const { user, logout } = useAuth();
+
 
     useEffect(() => {
         const fetchQuestions = async () => {
             setLoading(true);
-            try {
-                const res = await fetch(`http://localhost:3000/questions?page=${currentPage}&limit=${postsPerPage}`);
 
-                const data = await res.json();
+            const response = await safeRequest(
+                `/questions?page=${currentPage}&limit=${postsPerPage}`,
+                'GET',
+                null,
+                'Sekmingai gavom klausimus',
+                false);
 
-                console.log(data);
-
-                setQuestions(data.questions);
-                setTotalCount(data.totalCount);
-            } catch (error) {
-                console.error('Fetch klaida:', error);
-                toast.error('Įvyko tinklo klaida');
-            } finally {
-                setLoading(false);
+            if (response.status === 200) {
+                setQuestions(response.questions);
+                setTotalCount(response.totalCount);
             }
+
+            setLoading(false);
         };
 
         fetchQuestions();

@@ -4,15 +4,32 @@ import {v4 as generateID} from "uuid";
 import bcrypt from "bcrypt";
 
 export const getAnswers = async (req, res) => {
+    const { question_uuid } = req.query
+
     try {
-        const data = await database.promise().query(
-            `SELECT a.*, u.username FROM answers a LEFT JOIN users u ON u.uuid = a.user_uuid`
-        );
+        let query = `
+            SELECT a.*, u.username 
+            FROM answers a 
+            LEFT JOIN users u ON u.uuid = a.user_uuid
+        `;
+
+        const params = [];
+
+        if (question_uuid) {
+            query += ` WHERE a.question_uuid = ?`;
+            params.push(question_uuid);
+        }
+
+        const [rows] = await database.promise().query(query, params);
+
         res.status(200).json({
-            answers: data[0],
+            status: 200,
+            answers: rows,
         });
     } catch (err) {
+        console.error(err);
         res.status(500).json({
+            status: 500,
             message: err,
         });
     }
@@ -35,7 +52,7 @@ export const getAnswerById = async (req, res) => {
     }
 };
 
-export const createAnswer = async (req, res) => {
+export const createAnswer = async (authenticateToken, req, res) => {
     const answer = req.body;
     try {
         const uuid = generateID();
@@ -79,7 +96,7 @@ export const deleteAnswer = async (req, res) => {
             [id]
         );
 
-        res.status(200).json({ message: "Atsakymas sėkmingai ištrintas." });
+        res.status(200).json({ status: 200 });
     } catch (err) {
         res.status(500).json({ message: "Serverio klaida", error: err });
     }
