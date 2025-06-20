@@ -7,6 +7,7 @@ import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
 import { useNavigate } from 'react-router-dom';
 import {useAuth} from "../context/AuthContext.jsx";
 import EditedSymbol from "../components/EditedSymbol.jsx";
+import {safeRequest} from "../utils/api.js";
 
 // TODO parodyt kad buvo updated kl ir ats
 
@@ -29,39 +30,30 @@ const SingleQuestion = () => {
     }, [question_id]);
 
     const fetchQuestion = async () => {
-        const params = new URLSearchParams();
 
-        try {
-            const res = await fetch(`http://localhost:3000/questions/${question_id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+        const response = await safeRequest(
+            `/questions/${question_id}`,
+            'GET',
+            null,
+            '',
+            false);
 
-            const data = await res.json();
-            setQuestion(data.question);
-        } catch (error) {
-            console.error('Fetch klaida:', error);
-            toast.error('Įvyko tinklo klaida');
+        if (response.status === 200) {
+            setQuestion(response.question);
         }
     };
 
     const fetchAnswers = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/answers`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
 
-            const data = await res.json();
-            const filtered = data.answers.filter((answer) => answer.question_uuid === question_id)
-            setAnswers(filtered);
-        } catch (error) {
-            console.error('Fetch klaida:', error);
-            toast.error('Įvyko tinklo klaida');
+        const response = await safeRequest(
+            `/answers?question_uuid=${question_id}`,
+            'GET',
+            null,
+            '',
+            false);
+
+        if (response.status === 200) {
+            setAnswers(response.answers);
         }
     };
 
@@ -70,7 +62,6 @@ const SingleQuestion = () => {
             fetchAnswers();
         }
 
-        // setDeletingAnswer(null); // bandau reloaudint
         setEditingAnswer(null);
     }
 
@@ -82,70 +73,32 @@ const SingleQuestion = () => {
         setEditingQuestion(null);
     }
 
-    // DELETE ANSWER RELOAD
-
-    // const onDeleteAnswerClose = (isSuccess) => {
-    //     if (isSuccess) {
-    //         fetchAnswers();
-    //     }
-    //     setIsModalOpen(false)
-    //     setEditingQuestion(null);
-    // }
-
     // DELETE QUESTION
 
     const handleDelete = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/questions/${question.uuid}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
 
-            const data = await res.json();
+        const response = await safeRequest(
+            `/questions/${question.uuid}`,
+            'DELETE',
+            null,
+            'Klausimas sėkmingai ištrintas!',
+            false);
 
-            console.log("Delete response:", data);
-
-            if (res.ok) {
-                toast.success("Klausimas sėkmingai ištrintas!");
-                // onClose(true); // uždaro modalą ir informuoja apie sėkmę
-                navigate('/');
-            } else {
-                toast.error("Nepavyko ištrinti klausimo: " + data.message);
-                onClose(false);
-            }
-
-        } catch (error) {
-            console.error('Klaida trynimo metu:', error);
-            toast.error('Įvyko tinklo klaida');
-            // onClose(false);
+        if (response.status === 200) {
+            navigate('/')
         }
+
     };
 
     const handleDeleteAnswer = async (index) => {
-        try {
-            const res = await fetch(`http://localhost:3000/answers/${answers[index].uuid}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
+        const response = await safeRequest(
+            `/answers/${answers[index].uuid}`,
+            'DELETE',
+            null,
+            'Atsakymas sėkmingai ištrintas!');
 
-            const data = await res.json();
-
-            if (res.ok) {
-                toast.success("Atsakymas sėkmingai ištrintas!");
-                fetchAnswers();
-            } else {
-                toast.error("Nepavyko ištrinti atsakymo: " + data.message);
-            }
-
-        } catch (error) {
-            toast.error("Įvyko tinklo klaida");
-            console.error(error);
+        if (response.status === 200) {
+            await fetchAnswers();
         }
     };
 

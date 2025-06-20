@@ -1,4 +1,3 @@
-// AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -8,11 +7,15 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const savedUser = localStorage.getItem('user');
-        // console.log(savedUser);
-        if (savedUser !== undefined && user !== null) {
+        if (savedUser) {
             setUser(JSON.parse(savedUser));
         }
     }, []);
+
+    const login = (userData) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+    };
 
     const logout = () => {
         setUser(null);
@@ -21,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout }}>
+        <AuthContext.Provider value={{ user, setUser: login, logout }}>
             {children}
         </AuthContext.Provider>
     );
