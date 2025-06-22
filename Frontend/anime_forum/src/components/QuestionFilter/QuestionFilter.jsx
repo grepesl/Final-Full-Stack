@@ -7,6 +7,7 @@ const QuestionFilter = () => {
 
     const handleChange = (key, value) => {
         const newParams = new URLSearchParams(searchParams);
+
         if (value === '' || value === 'all') {
             newParams.delete(key);
         } else {
@@ -27,10 +28,10 @@ const QuestionFilter = () => {
                         handleChange(
                             'is_answered',
                             e.target.value === 'answered'
-                                ? 'true'
+                                ? 'answered'
                                 : e.target.value === 'unanswered'
-                                    ? 'false'
-                                    : ''
+                                    ? 'unanswered'
+                                    : 'all'
                         )
                     }
                 >

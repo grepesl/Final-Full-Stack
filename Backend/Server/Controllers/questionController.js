@@ -27,10 +27,12 @@ export const getQuestions = async (req, res) => {
         params.push(`%${tag}%`);
     }
 
-    if (is_answered === 'true') {
-        whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) > 0`);
-    } else if (is_answered === 'false') {
-        whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) = 0`);
+    if (is_answered !== 'all') {
+        if (is_answered === 'answered') {
+            whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) > 0`);
+        } else if (is_answered === 'unanswered') {
+            whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) = 0`);
+        }
     }
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
@@ -60,8 +62,8 @@ export const getQuestions = async (req, res) => {
             totalCount: totalCounts[0].totalCount,
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({
+            status: 500,
             message: 'Server error',
             error: err,
         });
@@ -70,7 +72,7 @@ export const getQuestions = async (req, res) => {
 
 export const getQuestionById = async (req, res) => {
     const { id } = req.params
-
+    console.log(id)
     try {
         const data = await database.promise().query(
             `SELECT q.*,
@@ -86,7 +88,6 @@ export const getQuestionById = async (req, res) => {
             question: data[0][0],
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({
             message: err,
         });
@@ -94,18 +95,21 @@ export const getQuestionById = async (req, res) => {
 };
 
 export const createQuestion = async (req, res) => {
+
     const question = req.body;
     const uuid = generateID();
+
+    const user = req.user;
     try {
 
         const data = await database.promise().query(
             'INSERT INTO `questions` (`uuid`, `user_uuid`, `title`, `content`, `tags`) VALUES (?,?,?,?,?)',
-            [uuid, question.user_uuid, question.title, question.content, question.tags]
+            [uuid, user.uuid, question.title, question.content, question.tags]
         );
 
-        res.status(200).json({ status: 'OK' });
+        res.status(200).json({ status: 200 });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
 
         res.status(500).json({ message: err });
     }
@@ -122,9 +126,9 @@ export const updateQuestion = async (req, res) => {
             [question.title, question.content, question.tags, id]
         );
 
-        res.status(200).json({ status: 'OK' });
+        res.status(200).json({ status: 200 });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
 
         res.status(500).json({ message: err });
     }

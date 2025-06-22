@@ -13,13 +13,10 @@ export const apiRequest = async (
         }
     };
 
-    console.log(isAuthRequired);
     if (isAuthRequired){
         const token = localStorage.getItem('token');
         options.headers['Authorization'] = `Bearer ${token}`;
     }
-
-    console.log(options);
 
     if (body) {
         options.body = JSON.stringify(body);
@@ -49,36 +46,5 @@ export const safeRequest = async (endpoint, method, body = null, successMessage 
         return data;
     } catch (error) {
         toast.error(error.message || 'Serverio klaida');
-        // throw error;
     }
 };
-
-
-// export const loginRequest = async (body) => {
-//
-//     const options = {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json',
-//         }
-//     };
-//
-//     if (body) {
-//         options.body = JSON.stringify(body);
-//     }
-//
-//     try {
-//         const response = await fetch(`${BASE_URL}${endpoint}`, options);
-//         const data = await response.json();
-//
-//         if (!response.ok) {
-//             throw new Error(data.message || 'Įvyko klaida');
-//         }
-//
-//         return data;
-//     } catch (error) {
-//         console.error('API klaida:', error);
-//         throw error;
-//     }
-// };

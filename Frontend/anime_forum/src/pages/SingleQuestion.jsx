@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import {NavLink, useParams} from "react-router-dom";
 import './SingleQuestion.css';
-import {toast} from "react-toastify";
 import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal.jsx";
 import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
 import { useNavigate } from 'react-router-dom';
-import {useAuth} from "../context/AuthContext.jsx";
 import EditedSymbol from "../components/EditedSymbol.jsx";
-import {safeRequest} from "../utils/api.js";
-
-// TODO parodyt kad buvo updated kl ir ats
+import {deleteQuestion, getQuestionsById} from "../services/questionService.js";
+import {createAnswer, deleteAnswer, getAnswersByQuestion} from "../services/answerService.js";
 
 const SingleQuestion = () => {
     const { question_id } = useParams();
@@ -18,9 +15,7 @@ const SingleQuestion = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAnswer, setEditingAnswer] = useState(null);
     const [editingQuestion, setEditingQuestion] = useState(null);
-    // const [deletingAnswer, setDeletingAnswer] = useState()
-    const { user, logout } = useAuth()
-    const [answerContent, setAnswerContent] = useState();
+    const [answerContent, setAnswerContent] = useState('');
 
     const navigate = useNavigate();
 
@@ -30,28 +25,15 @@ const SingleQuestion = () => {
     }, [question_id]);
 
     const fetchQuestion = async () => {
-
-        const response = await safeRequest(
-            `/questions/${question_id}`,
-            'GET',
-            null,
-            '',
-            false);
-
+        const response = await getQuestionsById(question_id);
+        console.log(response);
         if (response.status === 200) {
             setQuestion(response.question);
         }
     };
 
     const fetchAnswers = async () => {
-
-        const response = await safeRequest(
-            `/answers?question_uuid=${question_id}`,
-            'GET',
-            null,
-            '',
-            false);
-
+        const response = await getAnswersByQuestion(question_id);
         if (response.status === 200) {
             setAnswers(response.answers);
         }
@@ -61,7 +43,6 @@ const SingleQuestion = () => {
         if (isSuccess) {
             fetchAnswers();
         }
-
         setEditingAnswer(null);
     }
 
@@ -76,64 +57,24 @@ const SingleQuestion = () => {
     // DELETE QUESTION
 
     const handleDelete = async () => {
-
-        const response = await safeRequest(
-            `/questions/${question.uuid}`,
-            'DELETE',
-            null,
-            'Klausimas sėkmingai ištrintas!',
-            false);
-
+        const response = await deleteQuestion(question.uuid);
         if (response.status === 200) {
             navigate('/')
         }
-
     };
 
     const handleDeleteAnswer = async (index) => {
-        const response = await safeRequest(
-            `/answers/${answers[index].uuid}`,
-            'DELETE',
-            null,
-            'Atsakymas sėkmingai ištrintas!');
-
+        const response = await deleteAnswer(answers[index].uuid);
         if (response.status === 200) {
             await fetchAnswers();
         }
     };
 
-    const handleAddAsnwer = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/answers/`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    question_uuid: question_id,
-                    user_uuid: user.uuid,
-                    content: answerContent
-                })
-            });
-
-            const data = await res.json();
-
-            console.log("CREATE asnwer response:", data);
-
-            if (res.ok) {
-                toast.success("Klausimas sėkmingai ištrintas!");
-                // onClose(true); // uždaro modalą ir informuoja apie sėkmę
-                //navigate('/');
-            } else {
-                toast.error("Nepavyko ištrinti klausimo: " + data.message);
-                onClose(false);
-            }
-
-        } catch (error) {
-            console.error('Klaida trynimo metu:', error);
-            toast.error('Įvyko tinklo klaida');
-            // onClose(false);
+    const handleAddAnswer = async () => {
+        const response = await createAnswer(question_id, answerContent);
+        if (response.status === 200) {
+            await fetchAnswers();
+            setAnswerContent('');
         }
     };
 
@@ -177,8 +118,8 @@ const SingleQuestion = () => {
                 <h3 className="answers-title">Atsakymai</h3>
 
                 <div className="answer-form">
-                    <textarea placeholder="Įvesk atsakymą..." className="answer-input" onChange={(e) => setAnswerContent(e.target.value)}></textarea>
-                    <button className="submit-button" onClick={handleAddAsnwer}>Submit</button>
+                    <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>
+                    <button className="submit-button" onClick={handleAddAnswer}>Submit</button>
                 </div>
 
                 {(answers === undefined || answers.length === 0) ? (

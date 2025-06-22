@@ -14,13 +14,8 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "Vartotojas nerastas" });
         }
 
-        console.log(userRequest)
-        console.log(databaseUser[0][0])
-
         const databaseUserPassword = databaseUser[0][0].password;
         const isMatching = bcrypt.compareSync(userRequest.password, databaseUserPassword);
-
-        console.log("isMatching", isMatching);
 
         if (isMatching) {
             const token = jwt.sign(
@@ -41,7 +36,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "Neteisingi duomenys" });
         }
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).json({ message: err });
     }
 };

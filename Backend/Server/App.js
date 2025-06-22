@@ -14,7 +14,9 @@ const app = express();
 
 app.use(express.json()); // For parsing JSON request bodies
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: 'http://localhost:5173',
+    //origin: '*',
+    credentials: true
 }));
 
 app.use('/users', userRoutes);

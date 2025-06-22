@@ -3,6 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import './EditAnswerModal.css';
+import {safeRequest} from "../../services/apiService.js";
+import {deleteQuestion} from "../../services/questionService.js";
+import {updateAnswer} from "../../services/answerService.js";
 
 const EditAnswerModal = ({ answer, onClose }) => {
     if (!answer) return null;
@@ -14,42 +17,11 @@ const EditAnswerModal = ({ answer, onClose }) => {
     });
 
     const handleSubmit = async (values) => {
-        console.log("Naujas atsakymas:", values.content);
-        try {
-            console.log(values);
 
-            const res = await fetch('http://localhost:3000/answers/' + answer.uuid, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-
-            console.log(res);
-
-            const data = await res.json();
-
-            console.log(data);
-
-            if (data.status === 'OK') {
-                // toast.success("Registracija sėkminga!");
-                // setTimeout(() => navigate('/login'), 1000);
-
-                onClose(true)
-            } else {
-                // toast.error("Registration failed - " + data.message);
-
-                onClose(false)
-            }
-
-        } catch (error) {
-            console.error('Fetch klaida:', error);
-            toast.error('Įvyko tinklo klaida');
+        const response = await updateAnswer(answer.uuid, values);
+        if (response.status === 200) {
+            onClose(true)
         }
-        // toast.success("Atsakymas atnaujintas!");
-        // onClose(isSuccess); // Uždaro modalą
     };
 
     return (
