@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Questions.css';
-import { NavLink } from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../Pagination/Pagination.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
@@ -13,18 +13,27 @@ const Questions = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 2;
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
+    const location = useLocation();
 
     useEffect(() => {
         const fetchQuestions = async () => {
             setLoading(true);
 
+            const params = new URLSearchParams(location.search);
+
+            // Jei nėra puslapio, nustatom default
+            if (!params.get('page')) params.set('page', currentPage);
+            if (!params.get('limit')) params.set('limit', postsPerPage);
+
             const response = await safeRequest(
-                `/questions?page=${currentPage}&limit=${postsPerPage}`,
+                `/questions?${params.toString()}`,
                 'GET',
                 null,
-                'Sekmingai gavom klausimus',
-                false);
+                null,
+                false
+            );
 
             if (response.status === 200) {
                 setQuestions(response.questions);
@@ -35,9 +44,14 @@ const Questions = () => {
         };
 
         fetchQuestions();
-    }, [currentPage]);
+    }, [location.search]);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => {
+        const params = new URLSearchParams(location.search);
+        params.set('page', pageNumber);
+        setCurrentPage(pageNumber)
+        navigate({ search: params.toString() });
+    }
 
     return (
         <div>
