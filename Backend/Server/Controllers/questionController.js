@@ -7,30 +7,62 @@ export const getQuestions = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
+    // Filtrai
+    const sort_by_date = req.query.sort_by_date === 'DESC' ? 'DESC' : 'ASC';
+    const sort_by_answers = req.query.answers_count === 'DESC' ? 'DESC' : 'ASC';
+    const is_answered = req.query.is_answered;
+    const name = req.query.name;
+    const tag = req.query.tag;
+
+    let whereClauses = [];
+    let params = [];
+
+    if (name) {
+        whereClauses.push(`q.title LIKE ?`);
+        params.push(`%${name}%`);
+    }
+
+    if (tag) {
+        whereClauses.push(`q.tags LIKE ?`);
+        params.push(`%${tag}%`);
+    }
+
+    if (is_answered === 'true') {
+        whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) > 0`);
+    } else if (is_answered === 'false') {
+        whereClauses.push(`(SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) = 0`);
+    }
+
+    const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+    const sql = `
+        SELECT q.*, u.username,
+               (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) AS answers_count,
+               5 AS likes_count
+        FROM questions q
+        LEFT JOIN users u ON u.uuid = q.user_uuid
+        ${whereSQL}
+        ORDER BY q.created_at ${sort_by_date}, answers_count ${sort_by_answers}
+        LIMIT ? OFFSET ?;
+    `;
+
     try {
-        const [data] = await database.promise().query(`
-          SELECT q.*, u.username,
-                 (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) AS answers_count,
-                 5 AS likes_count
-          FROM questions q
-          LEFT JOIN users u ON u.uuid = q.user_uuid
-          LIMIT ? OFFSET ?;
-        `, [limit, offset]);
+        const [data] = await database.promise().query(sql, [...params, limit, offset]);
 
-        const [totalCounts] = await database.promise().query(`SELECT COUNT(*) AS totalCount FROM questions`);
-
-        const questions = data;
-        const totalCount = totalCounts[0].totalCount;
+        const [totalCounts] = await database.promise().query(
+            `SELECT COUNT(*) AS totalCount FROM questions q ${whereSQL}`,
+            params
+        );
 
         res.status(200).json({
             status: 200,
-            questions: questions,
-            totalCount: totalCount,
+            questions: data,
+            totalCount: totalCounts[0].totalCount,
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).json({
-            message: "Server error",
+            message: 'Server error',
             error: err,
         });
     }
