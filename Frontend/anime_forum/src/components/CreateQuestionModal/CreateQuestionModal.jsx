@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./CreateQuestionModal.css";
-import {toast} from "react-toastify";
 import {useAuth} from "../../context/AuthContext.jsx";
-import {NavLink} from "react-router-dom";
+import {createQuestion} from "../../services/questionService.js";
 
 const CreateQuestionModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,57 +26,27 @@ const CreateQuestionModal = () => {
             .required("Įveskite bent vieną tag'ą")
     });
 
-    // const handleSubmit = (values, { resetForm }) => {
-    //     console.log("Formos duomenys:", values);
-    //     resetForm();
-    //     setIsOpen(false);
-    // };
+    // TODO perkraut sukurus klausima
 
     const handleSubmit = async (values, {resetForm}) => {
+        // const response = await safeRequest(
+        //     `/questions`,
+        //     'POST',
+        //     values,
+        //     'Atsakymas pridetas!',
+        //     true
+        // );
+        //
+        // if (response.status === 200) {
+        //     resetForm();
+        //     setIsOpen(false);
+        // }
 
-        console.log("Naujas atsakymas:", values.content);
-        try {
-            console.log(values);
-
-            const res = await fetch('http://localhost:3000/questions/', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: values.title,
-                    content: values.content,
-                    tags: values.tags,
-                    user_uuid: user.uuid
-                }),
-            });
-
-            console.log(res);
-
-            const data = await res.json();
-
-            console.log(data);
-
-            if (data.status === 'OK') {
-                // toast.success("Registracija sėkminga!");
-                // setTimeout(() => navigate('/login'), 1000);
-
-                // onClose(true)
-                resetForm();
-                setIsOpen(false);
-            } else {
-                // toast.error("Registration failed - " + data.message);
-
-                // onClose(false)
-            }
-
-        } catch (error) {
-            console.error('Fetch klaida:', error);
-            toast.error('Įvyko tinklo klaida');
+        const response = await createQuestion(values);
+        if (response.status === 200) {
+            resetForm();
+            setIsOpen(false);
         }
-        // toast.success("Atsakymas atnaujintas!");
-        // onClose(isSuccess); // Uždaro modalą
     };
 
     return (

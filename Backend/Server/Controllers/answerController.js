@@ -27,7 +27,7 @@ export const getAnswers = async (req, res) => {
             answers: rows,
         });
     } catch (err) {
-        console.error(err);
+        // console.error(err);
         res.status(500).json({
             status: 500,
             message: err,
@@ -52,19 +52,22 @@ export const getAnswerById = async (req, res) => {
     }
 };
 
-export const createAnswer = async (authenticateToken, req, res) => {
+export const createAnswer = async (req, res) => {
     const answer = req.body;
+    const user = req.user;
+
     try {
         const uuid = generateID();
         const data = await database.promise().query(
             'INSERT INTO `answers` (`uuid`, `question_uuid`, `user_uuid`, `content`) VALUES (?,?,?,?)',
-            [uuid, answer.question_uuid, answer.user_uuid, answer.content]
+            [uuid, answer.question_uuid, user.uuid, answer.content]
         );
-        res.status(200).json({ status: 'OK' });
-    } catch (err) {
-        console.log(err);
 
-        res.status(500).json({ message: err });
+        res.status(200).json({ status: 200 });
+    } catch (err) {
+        // console.log(err);
+
+        res.status(500).json({status: 500, message: err });
     }
 };
 
@@ -78,9 +81,9 @@ export const updateAnswer = async (req, res) => {
             [answer.content, id]
         );
 
-        res.status(200).json({ status: 'OK' });
+        res.status(200).json({ status: 200 });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
 
         res.status(500).json({ message: err });
     }

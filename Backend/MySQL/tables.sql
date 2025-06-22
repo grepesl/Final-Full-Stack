@@ -29,7 +29,7 @@ CREATE TABLE `anime_forum`.`answers` (
     `question_uuid` VARCHAR(45) NOT NULL,
     `answer_uuid` VARCHAR(45),
     `user_uuid` VARCHAR(45) NOT NULL,
-    `content` VARCHAR(45) NOT NULL,
+    `content` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),

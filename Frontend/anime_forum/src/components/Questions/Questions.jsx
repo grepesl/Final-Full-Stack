@@ -1,48 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import './Questions.css';
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import { toast } from "react-toastify";
 import Pagination from "../Pagination/Pagination.jsx";
-import {useAuth} from "../../context/AuthContext.jsx";
-import {safeRequest} from "../../utils/api.js";
+import {getQuestions} from "../../services/questionService.js";
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [totalCount, setTotalCount] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 2;
-    const { user, logout } = useAuth();
     const navigate = useNavigate();
-
     const location = useLocation();
 
     useEffect(() => {
         const fetchQuestions = async () => {
-            setLoading(true);
-
             const params = new URLSearchParams(location.search);
-
             // Jei nėra puslapio, nustatom default
             if (!params.get('page')) params.set('page', currentPage);
             if (!params.get('limit')) params.set('limit', postsPerPage);
 
-            const response = await safeRequest(
-                `/questions?${params.toString()}`,
-                'GET',
-                null,
-                null,
-                false
-            );
-
+            const response = await getQuestions(params.toString());
             if (response.status === 200) {
                 setQuestions(response.questions);
                 setTotalCount(response.totalCount);
             }
-
-            setLoading(false);
         };
-
         fetchQuestions();
     }, [location.search]);
 
@@ -79,8 +61,7 @@ const Questions = () => {
                 ))}
             </div>
             <Pagination
-                //filteredDataAmount={totalCount} // or total count if you have it
-                filteredDataAmount={50}
+                filteredDataAmount={totalCount}
                 pageSize={postsPerPage}
                 currentPage={currentPage}
                 changePage={paginate}
