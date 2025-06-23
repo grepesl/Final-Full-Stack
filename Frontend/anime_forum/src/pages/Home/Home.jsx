@@ -12,7 +12,6 @@ const Home = () => {
             <Hero />
             {/*<Sidebar />*/}
             <QuestionFilter />
-            <CreateQuestionModal />
             <Questions />
         </div>
     )

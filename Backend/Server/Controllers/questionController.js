@@ -36,17 +36,29 @@ export const getQuestions = async (req, res) => {
     }
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+    let sortingType = '';
+
+    if (req.query.sorting_type === 'date-desc') {
+        sortingType = 'ORDER BY q.created_at DESC';
+    } else if (req.query.sorting_type === 'date-asc') {
+        sortingType = 'ORDER BY q.created_at ASC';
+    } else if (req.query.sorting_type === 'answer-desc') {
+        sortingType = 'ORDER BY answers_count DESC';
+    } else if (req.query.sorting_type === 'answer-asc') {
+        sortingType = 'ORDER BY answers_count ASC';
+    }
 
     const sql = `
         SELECT q.*, u.username,
                (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) AS answers_count,
-               5 AS likes_count
+               (SELECT SUM(value) FROM likes WHERE question_uuid = q.uuid) AS likes_count
         FROM questions q
         LEFT JOIN users u ON u.uuid = q.user_uuid
         ${whereSQL}
-        ORDER BY q.created_at ${sort_by_date}, answers_count ${sort_by_answers}
+        ${sortingType} 
         LIMIT ? OFFSET ?;
     `;
+    console.log(sql);
 
     try {
         const [data] = await database.promise().query(sql, [...params, limit, offset]);
@@ -78,7 +90,7 @@ export const getQuestionById = async (req, res) => {
             `SELECT q.*,
                     u.username,
                     (SELECT COUNT(*) FROM answers WHERE question_uuid = q.uuid) as answers_count,
-                    5                                                           as likes_count
+                    (SELECT SUM(value) FROM likes WHERE question_uuid = q.uuid) AS likes_count
              FROM questions q
                       LEFT JOIN users u ON u.uuid = q.user_uuid 
               WHERE q.uuid = ?`,[id]

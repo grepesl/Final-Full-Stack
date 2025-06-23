@@ -3,6 +3,7 @@ import './Questions.css';
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import Pagination from "../Pagination/Pagination.jsx";
 import {getQuestions} from "../../services/questionService.js";
+import CreateQuestionModal from "../CreateQuestionModal/CreateQuestionModal.jsx";
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
@@ -15,6 +16,8 @@ const Questions = () => {
     useEffect(() => {
         const fetchQuestions = async () => {
             const params = new URLSearchParams(location.search);
+
+            console.log(params);
             // Jei nėra puslapio, nustatom default
             if (!params.get('page')) params.set('page', currentPage);
             if (!params.get('limit')) params.set('limit', postsPerPage);
@@ -37,6 +40,7 @@ const Questions = () => {
 
     return (
         <div>
+            <CreateQuestionModal onClose={(isSccusess) => isSccusess ? paginate(1) : null} />
             <h1 className="forum-title">All Questions</h1>
             <div className="questions-container">
                 {questions.map((question) => (
@@ -53,13 +57,14 @@ const Questions = () => {
                             ))}
                         </ul>
                         <div className="question-meta">
-                            <span>👍 {question.likes_count}</span>
+                            <span>👍 {question.likes_count ?? 0}</span>
                             <span>💬 {question.answers_count}</span>
                             <span>👤 {question.username}</span>
                         </div>
                     </div>
                 ))}
             </div>
+            {/*TODO kai paspaudi back numeta i 1 page o lieka info seno*/}
             <Pagination
                 filteredDataAmount={totalCount}
                 pageSize={postsPerPage}

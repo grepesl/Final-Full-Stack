@@ -196,10 +196,6 @@
     cursor: pointer;
 }
 
-.vote-icon.upvote {
-    color: #ef4444;
-}
-
 .vote-icon.downvote {
     color: #64748b;
 }
@@ -229,4 +225,14 @@
     color: #666;
     font-style: italic;
     margin: 0;
+}
+
+/*/////////*/
+
+.vote-icon.upvote.active {
+    color: #b91c1c; /* tamsesnė raudona paspaudus */
+}
+
+.vote-icon.downvote.active {
+    color: #1e40af; /* mėlyna paspaudus */
 }
