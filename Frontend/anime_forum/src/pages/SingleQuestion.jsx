@@ -129,10 +129,14 @@ const SingleQuestion = () => {
             <div className="question-header">
                 <span className="question-user">👤 {question.username}</span>
                 <EditedSymbol isNotEdited={question.updated_at === null} />
-                <div className="question-actions">
-                    <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
-                    <button className="action-button" onClick={handleDelete}>Delete</button>
-                </div>
+                {user && user.uuid === question.user_uuid ? (
+                    <div className="question-actions">
+                        <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
+                        <button className="action-button" onClick={handleDelete}>Delete</button>
+                    </div>
+                ) : (
+                    ''
+                )}
             </div>
 
             <h2 className="question-title">{question.title}</h2>
@@ -167,10 +171,19 @@ const SingleQuestion = () => {
             <div className="answers-section">
                 <h3 className="answers-title">Atsakymai</h3>
 
-                <div className="answer-form">
-                    <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>
-                    <button className="submit-button" onClick={handleAddAnswer}>Submit</button>
-                </div>
+                {user ? (
+                    <div className="answer-form">
+                        <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>
+                        <button className="submit-button" onClick={handleAddAnswer}>Submit</button>
+                    </div>
+                ) : (
+                    ''
+                )}
+
+                {/*<div className="answer-form">*/}
+                {/*    <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>*/}
+                {/*    <button className="submit-button" onClick={handleAddAnswer}>Submit</button>*/}
+                {/*</div>*/}
 
                 {(answers === undefined || answers.length === 0) ? (
                     <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>
@@ -181,12 +194,17 @@ const SingleQuestion = () => {
                             <EditedSymbol isNotEdited={answer.updated_at === null} />
                             <p className="answer-content">{answer.content}</p>
                             <p className="answer-user">👤 {answer.username}</p>
-                            <div className="answer-actions">
-                                <button className="answer-button" onClick={() => setEditingAnswer(answer)}>
-                                    Update
-                                </button>
-                                <button className="answer-button" onClick={() => handleDeleteAnswer(index)}>Delete</button>
-                            </div>
+
+                            {user && user.uuid === answer.user_uuid ? (
+                                <div className="answer-actions">
+                                    <button className="answer-button" onClick={() => setEditingAnswer(answer)}>
+                                        Update
+                                    </button>
+                                    <button className="answer-button" onClick={() => handleDeleteAnswer(index)}>Delete</button>
+                                </div>
+                            ) : (
+                                ''
+                            )}
                         </div>
                     ))
                 )}
