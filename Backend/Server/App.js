@@ -7,6 +7,7 @@ import authRoutes from "./Routes/authRoutes.js";
 import cors from 'cors';
 
 import dotenv from "dotenv";
+import likeRoutes from "./Routes/likeRoutes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/users', userRoutes);
 app.use('/questions', questionRoutes);
 app.use('/answers', answerRoutes);
 app.use('/auth', authRoutes);
+app.use('/likes',likeRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

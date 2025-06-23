@@ -5,7 +5,7 @@ import "./CreateQuestionModal.css";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {createQuestion} from "../../services/questionService.js";
 
-const CreateQuestionModal = () => {
+const CreateQuestionModal = ({ onClose }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useAuth()
 
@@ -26,26 +26,12 @@ const CreateQuestionModal = () => {
             .required("Įveskite bent vieną tag'ą")
     });
 
-    // TODO perkraut sukurus klausima
-
     const handleSubmit = async (values, {resetForm}) => {
-        // const response = await safeRequest(
-        //     `/questions`,
-        //     'POST',
-        //     values,
-        //     'Atsakymas pridetas!',
-        //     true
-        // );
-        //
-        // if (response.status === 200) {
-        //     resetForm();
-        //     setIsOpen(false);
-        // }
-
         const response = await createQuestion(values);
         if (response.status === 200) {
             resetForm();
             setIsOpen(false);
+            onClose(true)
         }
     };
 

@@ -7,6 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import EditedSymbol from "../components/EditedSymbol.jsx";
 import {deleteQuestion, getQuestionsById} from "../services/questionService.js";
 import {createAnswer, deleteAnswer, getAnswersByQuestion} from "../services/answerService.js";
+// import LikingCount from "../components/LikingCount.jsx";
+import {useAuth} from "../context/AuthContext.jsx";
+import {addReaction, getUserReaction} from "../services/likeService.js";
 
 const SingleQuestion = () => {
     const { question_id } = useParams();
@@ -16,8 +19,24 @@ const SingleQuestion = () => {
     const [editingAnswer, setEditingAnswer] = useState(null);
     const [editingQuestion, setEditingQuestion] = useState(null);
     const [answerContent, setAnswerContent] = useState('');
+    const [userVote, setUserVote] = useState(null);
+    const { user, logout } = useAuth()
 
     const navigate = useNavigate();
+
+    const handleUpvote = async () => {
+        const newVote = userVote === 'up' ? null : 'up';
+        setUserVote(newVote);
+        await addReaction(question_id, newVote === 'up' ? 1 : 0);
+        await refreshQuestionLikes();
+    };
+
+    const handleDownvote = async () => {
+        const newVote = userVote === 'down' ? null : 'down';
+        setUserVote(newVote);
+        await addReaction(question_id, newVote === 'down' ? -1 : 0);
+        await refreshQuestionLikes();
+    };
 
     useEffect(() => {
         fetchAnswers();
@@ -27,6 +46,29 @@ const SingleQuestion = () => {
     const fetchQuestion = async () => {
         const response = await getQuestionsById(question_id);
         console.log(response);
+        if (response.status === 200) {
+            setQuestion(response.question);
+        }
+        await getLike();
+    };
+
+    const getLike = async () => {
+        const response_ = await getUserReaction(question_id);
+        console.log(response_);
+        if (response_.status === 200) {
+            if (response_.value === 1){
+                setUserVote('up');
+            }
+
+            if (response_.value === -1){
+                setUserVote('down');
+                console.log('65454654')
+            }
+        }
+    }
+
+    const refreshQuestionLikes = async () => {
+        const response = await getQuestionsById(question_id);
         if (response.status === 200) {
             setQuestion(response.question);
         }
@@ -107,12 +149,20 @@ const SingleQuestion = () => {
 
             <div className="question-meta">
                 <div className="vote-box">
-                    <i className="bi bi-caret-up-fill vote-icon upvote"></i>
-                    <span className="vote-count">{question.likes_count}</span>
-                    <i className="bi bi-caret-down-fill vote-icon downvote"></i>
+                    <i
+                        className={`bi bi-caret-up-fill vote-icon upvote ${userVote === 'up' ? 'active' : ''}`}
+                        onClick={handleUpvote}
+                    ></i>
+                    <span className="vote-count">{question.likes_count ?? 0}</span>
+                    <i
+                        className={`bi bi-caret-down-fill vote-icon downvote ${userVote === 'down' ? 'active' : ''}`}
+                        onClick={handleDownvote}
+                    ></i>
                 </div>
                 <span className="answers-count">💬 {question.answers_count}</span>
             </div>
+
+            {/*<LikingCount />*/}
 
             <div className="answers-section">
                 <h3 className="answers-title">Atsakymai</h3>

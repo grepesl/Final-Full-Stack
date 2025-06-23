@@ -7,13 +7,13 @@ const QuestionFilter = () => {
 
     const handleChange = (key, value) => {
         const newParams = new URLSearchParams(searchParams);
-
         if (value === '' || value === 'all') {
             newParams.delete(key);
         } else {
             newParams.set(key, value);
         }
-        newParams.set('page', 1);
+        newParams.set('page', '1');
+        //console.log(newParams);
         setSearchParams(newParams);
     };
 
@@ -63,29 +63,33 @@ const QuestionFilter = () => {
                 />
             </div>
 
+            {/*<div className="filter-group">*/}
+            {/*    <label htmlFor="sort-date">Data</label>*/}
+            {/*    <select*/}
+            {/*        id="sort-date"*/}
+            {/*        value={searchParams.get('sort_by_date') || 'ASC'}*/}
+            {/*        onChange={(e) => handleChange('sort_by_date', e.target.value)}*/}
+            {/*    >*/}
+            {/*        <option value="DESC">Naujausi</option>*/}
+            {/*        <option value="ASC">Seniausi</option>*/}
+            {/*    </select>*/}
+            {/*</div>*/}
+
             <div className="filter-group">
-                <label htmlFor="sort-date">Data</label>
+                <label htmlFor="sort-questions">Rikiuoti pagal</label>
                 <select
-                    id="sort-date"
-                    value={searchParams.get('sort_by_date') || 'ASC'}
-                    onChange={(e) => handleChange('sort_by_date', e.target.value)}
+                    id="sort-questions"
+                    value={searchParams.get('sorting_type') || 'date-desc'}
+                    onChange={(e) => handleChange('sorting_type', e.target.value)}
                 >
-                    <option value="DESC">Naujausi</option>
-                    <option value="ASC">Seniausi</option>
+                    <option value="date-desc">Data: Naujausi</option>
+                    <option value="date-asc">Data: Seniausi</option>
+                    <option value="answer-desc">Atsakymų: Daugiausia</option>
+                    <option value="answer-asc">Atsakymų: Mažiausia</option>
                 </select>
             </div>
 
-            <div className="filter-group">
-                <label htmlFor="sort-answers">Atsakymų skaičius</label>
-                <select
-                    id="sort-answers"
-                    value={searchParams.get('answers_count') || 'ASC'}
-                    onChange={(e) => handleChange('answers_count', e.target.value)}
-                >
-                    <option value="DESC">Daugiausia</option>
-                    <option value="ASC">Mažiausia</option>
-                </select>
-            </div>
+
         </section>
     );
 };
