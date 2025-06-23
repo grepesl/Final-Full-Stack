@@ -11,11 +11,11 @@ import Contact from "./pages/Contact/Contact.jsx";
 import {ToastContainer} from "react-toastify";
 
 const App = () => {
-
     return (
-        <div>
-                <Navbar />
-                <ToastContainer position="top-right" autoClose={2000} />
+        <div className="page-wrapper">
+            <Navbar />
+            <ToastContainer position="top-right" autoClose={2000} />
+            <main className="page-content">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<Contact />} />
@@ -24,8 +24,10 @@ const App = () => {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/question/:question_id" element={<SingleQuestion />} />
                 </Routes>
-                <Footer />
+            </main>
+            <Footer />
         </div>
-    )
-}
+    );
+};
+
 export default App

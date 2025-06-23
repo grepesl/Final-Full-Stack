@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 export default function Footer() {
     return (
-        <footer className="footer">
+        <footer className="footer sticky-footer">
             <div className="footer-container">
 
                 <div className="footer-section description">
