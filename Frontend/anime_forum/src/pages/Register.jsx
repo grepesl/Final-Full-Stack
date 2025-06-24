@@ -5,14 +5,12 @@ import './Register.css';
 import {useNavigate} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import {loginUser, registerUser} from "../services/authService.js";
 
 // TODO: pridet gimimo data, pakeist i formik sintakse
 
 const Register = () => {
     const navigate = useNavigate();
-    const notify = () => toast.success("Registracija sėkminga!");
-    const notifyError = () => toast.error('Klaida registruojantis');
-
 
     const formik = useFormik({
         initialValues: {
@@ -49,34 +47,9 @@ const Register = () => {
                 .optional()
         }),
         onSubmit: async (values) => {
-            try {
-                console.log(values);
-
-                const res = await fetch('http://localhost:3000/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(values),
-                });
-
-                console.log(res);
-
-                const data = await res.json();
-
-                console.log(data);
-
-                if (data.status === 'OK') {
-                    toast.success("Registracija sėkminga!");
-                    setTimeout(() => navigate('/login'), 1000);
-                } else {
-                    toast.error("Registration failed - " + data.message);
-                }
-
-            } catch (error) {
-                console.error('Fetch klaida:', error);
-                toast.error('Įvyko tinklo klaida');
+            const response = await registerUser(values);
+            if (response.status === 200) {
+                setTimeout(() => navigate('/login'), 1000);
             }
         }
     });
@@ -100,7 +73,6 @@ const Register = () => {
                         <div className="register-error">{formik.errors.username}</div>
                     )}
                 </div>
-
                 <div className="register-field">
                     <label htmlFor="email">Email</label>
                     <input
@@ -115,7 +87,6 @@ const Register = () => {
                         <div className="register-error">{formik.errors.email}</div>
                     )}
                 </div>
-
                 <div className="register-field">
                     <label htmlFor="password">Password</label>
                     <input
@@ -144,7 +115,6 @@ const Register = () => {
                         <div className="register-error">{formik.errors.passwordRepeat}</div>
                     )}
                 </div>
-
                 <button type="submit" className="register-submit">Register</button>
             </form>
         </div>
@@ -152,4 +122,3 @@ const Register = () => {
 };
 
 export default Register;
-

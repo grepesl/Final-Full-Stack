@@ -6,6 +6,8 @@ import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import { useAuth } from '../../context/AuthContext.jsx';
 import bcrypt from 'bcryptjs';
+import {getQuestionsById} from "../../services/questionService.js";
+import {loginUser} from "../../services/authService.js";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -24,53 +26,19 @@ const Login = () => {
                 .required('Slaptažodis privalomas'),
         }),
         onSubmit: async (values) => {
-            try {
-                console.log(values);
-
-                //const hashedPassword = bcrypt.hashSync(values.password, 10);
-
-                const res = await fetch('http://localhost:3000/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: values.email,
-                        password: values.password,
-                    }),
-                });
-
-                console.log(res);
-
-                const data = await res.json();
-
-                console.log(data);
-
-                if (data.status === 'OK') {
-                    toast.success("Login successfully");
-
+                const response = await loginUser(values.email, values.password);
+                if (response.status === 200) {
                     // Saugoma į localStorage
-                    localStorage.setItem('token', data.jwt);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', response.jwt);
+                    localStorage.setItem('user', JSON.stringify(response.user));
                     console.log('user logged in');
                     console.log(localStorage.getItem('user'));
                     // Nustatoma user globaliam kontekste
-                    setUser(data.user); // ← jei turi useAuth()
-
-
+                    setUser(response.user);
                     setTimeout(() => navigate('/'), 1000);
-                } else {
-                    toast.error("Login failed - " + data.message);
                 }
-
-            } catch (error) {
-                console.error('Fetch klaida:', error);
-                toast.error('Įvyko tinklo klaida');
-            }
         }
     });
-
 
     return (
         <div className="login-form-container">
@@ -92,7 +60,6 @@ const Login = () => {
                         <div className="login-form-error">{formik.errors.email}</div>
                     )}
                 </div>
-
                 <div className="login-form-field">
                     <label htmlFor="password">Password</label>
                     <input
@@ -111,7 +78,6 @@ const Login = () => {
                         <div className="login-form-error">{formik.errors.password}</div>
                     )}
                 </div>
-
                 <button type="submit" className="login-form-submit">
                     Login
                 </button>
