@@ -45,7 +45,6 @@ const SingleQuestion = () => {
 
     const fetchQuestion = async () => {
         const response = await getQuestionsById(question_id);
-        console.log(response);
         if (response.status === 200) {
             setQuestion(response.question);
         }
@@ -53,16 +52,18 @@ const SingleQuestion = () => {
     };
 
     const getLike = async () => {
-        const response_ = await getUserReaction(question_id);
-        console.log(response_);
-        if (response_.status === 200) {
-            if (response_.value === 1){
+        if (!user || user.uuid === null) {
+            return;
+        }
+
+        const response = await getUserReaction(question_id);
+        if (response.status === 200) {
+            if (response.value === 1){
                 setUserVote('up');
             }
 
-            if (response_.value === -1){
+            if (response.value === -1){
                 setUserVote('down');
-                console.log('65454654')
             }
         }
     }
@@ -143,13 +144,11 @@ const SingleQuestion = () => {
 
             <p className="question-content">{question.content}</p>
 
-            {/*TODO pataisyt, nes neveikia*/}
-
-            {/*<ul className="question-tags">*/}
-            {/*    {question.tags.split(",").map((tag, index) => (*/}
-            {/*        <li key={index} className="tag">{tag.trim()}</li>*/}
-            {/*    ))}*/}
-            {/*</ul>*/}
+            <ul className="question-tags">
+                {(question.tags || '').split(",").map((tag, index) => (
+                    <li key={index} className="tag">{tag.trim()}</li>
+                ))}
+            </ul>
 
             <div className="question-meta">
                 <div className="vote-box">
@@ -166,8 +165,6 @@ const SingleQuestion = () => {
                 <span className="answers-count">💬 {question.answers_count}</span>
             </div>
 
-            {/*<LikingCount />*/}
-
             <div className="answers-section">
                 <h3 className="answers-title">Atsakymai</h3>
 
@@ -179,11 +176,6 @@ const SingleQuestion = () => {
                 ) : (
                     ''
                 )}
-
-                {/*<div className="answer-form">*/}
-                {/*    <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>*/}
-                {/*    <button className="submit-button" onClick={handleAddAnswer}>Submit</button>*/}
-                {/*</div>*/}
 
                 {(answers === undefined || answers.length === 0) ? (
                     <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>

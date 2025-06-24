@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { assets } from '../../assets/assets.js';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import './Navbar.css';
 import  LinkName  from '../LinkName/LinkName.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 const Navbar = () => {
     const [visible, setVisible] = useState(false);
     const { user, logout } = useAuth();
-    console.log('Navbar user:', user);
+    const navigate = useNavigate();
 
     const PhoneLinkName = ({ to, label }) => (
         <NavLink
@@ -21,6 +21,12 @@ const Navbar = () => {
             {label}
         </NavLink>
     );
+
+    const logoutUser = () => {
+        logout();
+
+        setTimeout(() => navigate('/'));
+    }
 
     return (
         <header className="navbar">
@@ -42,7 +48,7 @@ const Navbar = () => {
                                 <NavLink to="/profile">
                                     <p className="dropdown-item">{user.username}</p>
                                 </NavLink>
-                                <p className="dropdown-item" onClick={logout}>Logout</p>
+                                <p className="dropdown-item" onClick={logoutUser}>Logout</p>
                             </>
                         ) : (
                             <>
