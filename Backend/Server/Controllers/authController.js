@@ -29,7 +29,7 @@ export const login = async (req, res) => {
             );
 
             return res.status(200).json({
-                status: "OK",
+                status: 200,
                 jwt: token,
                 user: databaseUser[0][0],
             });
@@ -54,7 +54,7 @@ export const registerUser = async (req, res) => {
             [uuid, user.username, user.email, password]
         );
 
-        res.status(200).json({ status: 'OK' });
+        res.status(200).json({ status: 200 });
     } catch (err) {
         // console.log(err);
 
