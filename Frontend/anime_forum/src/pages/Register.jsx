@@ -52,7 +52,7 @@ const Register = () => {
             try {
                 console.log(values);
 
-                const res = await fetch('http://localhost:3000/users', {
+                const res = await fetch('http://localhost:3000/auth/register', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
