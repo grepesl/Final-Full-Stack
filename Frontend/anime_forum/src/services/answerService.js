@@ -15,8 +15,7 @@ export const createAnswer = async (question_uuid, content) => {
         `/answers`,
         'POST',
         { question_uuid, content },
-        'Atsakymas sėkmingai pridėtas!',
-        true
+        'Atsakymas sėkmingai pridėtas!'
     );
 };
 
@@ -25,8 +24,7 @@ export const updateAnswer = async (uuid, values) => {
         `/answers/${uuid}`,
         'PUT',
         values,
-        'Atsakymas atnaujintas!',
-        false
+        'Atsakymas atnaujintas!'
     );
 };
 
@@ -35,7 +33,6 @@ export const deleteAnswer = async (uuid) => {
         `/answers/${uuid}`,
         'DELETE',
         null,
-        'Atsakymas ištrintas!',
-        false
+        'Atsakymas ištrintas!'
     );
 };
