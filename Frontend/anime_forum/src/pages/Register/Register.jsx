@@ -3,11 +3,9 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './Register.css';
 import {useNavigate} from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import {loginUser, registerUser} from "../services/authService.js";
-
-// TODO: pridet gimimo data, pakeist i formik sintakse
+import { registerUser } from "../../services/authService.js";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -21,25 +19,25 @@ const Register = () => {
         },
         validationSchema: Yup.object({
             username: Yup.string()
-                .min(3, 'Per trumpas vardas')
-                .max(20, 'Slapyvardis per ilgas.')
-                .required('Būtinas laukelis')
+                .min(5, 'Name too short')
+                .max(20, 'Nickname is too long')
+                .required('Required field')
                 .trim(),
             email: Yup.string()
-                .email('Netinkamas el. paštas')
-                .required('Būtinas laukelis')
+                .email('Invalid email')
+                .required('Required field')
                 .trim(),
             password: Yup.string()
-                // .matches(
-                //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/,
-                //     'Slaptažodis privalo turėti bent 1 didžiąją, bent 1 mažąją raidę, specialų simbolį (@$!%*?&), bent 1 skaičių ir būtų ne trumpesnis nei 8 simbolių ir ne ilgesnis nei 25 simbolių.'
-                // )
-                .required('Būtinas laukelis')
+                .matches(
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/,
+                    'The password must contain at least 1 uppercase letter, at least 1 lowercase letter, a special character (@$!%*?&), at least 1 number, and be at least 8 characters long and at least 25 characters long'
+                )
+                .required('Required field')
                 .trim(),
             passwordRepeat: Yup.string()
-                .oneOf([Yup.ref('password')], 'Slaptažodžiai turi sutapti.')
+                .oneOf([Yup.ref('password')], 'The passwords must match')
                 .trim()
-                .required('Laukas yra privalomas.')
+                .required('Required field')
                 .trim(),
             education: Yup.string()
                 .optional(),

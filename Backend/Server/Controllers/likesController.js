@@ -1,11 +1,6 @@
 import database from "../database.js";
 
 export const changeReaction = async (req, res) => {
-    //status
-    //Like -> 1
-    //Dislike -> -1
-    //Bybys = 0
-    // status, question_uuid
 
     try {
         await database.promise().query(`
@@ -16,14 +11,12 @@ export const changeReaction = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        console.log(err);
         res.status(500).json({ message: err });
     }
 }
 
-// GET /likes/:question_uuid
 export const getReactionByQuestion = async (req, res) => {
-    const question_uuid = req.params.question_uuid;
+    const question_uuid = req.params.id;
     const user_uuid = req.user.uuid;
 
     const [rows] = await database.promise().query(`

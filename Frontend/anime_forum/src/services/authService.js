@@ -5,7 +5,7 @@ export const loginUser = async (email, password) => {
         '/auth/login',
         'POST',
         { email, password },
-        'Prisijungta sėkmingai!'
+        'Login successfully!'
     );
 };
 
@@ -14,8 +14,6 @@ export const registerUser = async (values) => {
         '/auth/register',
         'POST',
         values,
-        'Registracija sėkminga!'
+        'Registration successful!'
     );
 };
-
-// userData

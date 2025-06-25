@@ -5,7 +5,7 @@ export const updateUser = async (uuid, values) => {
         `/users/${uuid}`,
         'PUT',
         values,
-        'Profilio informacija atnaujintas!'
+        'Profile information updated!'
     );
 };
 

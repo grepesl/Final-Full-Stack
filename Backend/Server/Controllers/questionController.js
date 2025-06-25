@@ -1,4 +1,3 @@
-// controllers/userController.js
 import database from './../database.js';
 import {v4 as generateID} from "uuid";
 
@@ -8,8 +7,6 @@ export const getQuestions = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Filtrai
-    const sort_by_date = req.query.sort_by_date === 'DESC' ? 'DESC' : 'ASC';
-    const sort_by_answers = req.query.answers_count === 'DESC' ? 'DESC' : 'ASC';
     const is_answered = req.query.is_answered;
     const name = req.query.name;
     const tag = req.query.tag;
@@ -17,6 +14,7 @@ export const getQuestions = async (req, res) => {
     let whereClauses = [];
     let params = [];
 
+    // LIKE teksto tikrinimo salyga, % nesvarbu kas po ar pries ju
     if (name) {
         whereClauses.push(`q.title LIKE ?`);
         params.push(`%${name}%`);
@@ -58,7 +56,6 @@ export const getQuestions = async (req, res) => {
         ${sortingType} 
         LIMIT ? OFFSET ?;
     `;
-    console.log(sql);
 
     try {
         const [data] = await database.promise().query(sql, [...params, limit, offset]);
@@ -84,7 +81,6 @@ export const getQuestions = async (req, res) => {
 
 export const getQuestionById = async (req, res) => {
     const { id } = req.params
-    console.log(id)
     try {
         const data = await database.promise().query(
             `SELECT q.*,
@@ -110,7 +106,6 @@ export const createQuestion = async (req, res) => {
 
     const question = req.body;
     const uuid = generateID();
-
     const user = req.user;
     try {
 
@@ -121,8 +116,6 @@ export const createQuestion = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        // console.log(err);
-
         res.status(500).json({ message: err });
     }
 };
@@ -140,8 +133,6 @@ export const updateQuestion = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        // console.log(err);
-
         res.status(500).json({ message: err });
     }
 }
@@ -158,6 +149,6 @@ export const deleteQuestion = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        res.status(500).json({ message: "Serverio klaida", error: err });
+        res.status(500).json({ message: "Server error", error: err });
     }
 }

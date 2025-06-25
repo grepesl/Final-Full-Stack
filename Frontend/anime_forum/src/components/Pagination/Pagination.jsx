@@ -51,7 +51,7 @@ const Pagination = ({ filteredDataAmount, pageSize, currentPage, changePage }) =
                 </button>
             </div>
             <p>
-                Rodoma {from} - {to} iš {filteredDataAmount} klausimų
+                Showing {from} - {to} from {filteredDataAmount} questions
             </p>
         </div>
     );

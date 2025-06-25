@@ -27,7 +27,6 @@ CREATE TABLE `anime_forum`.`answers` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `uuid` VARCHAR(45) NOT NULL,
     `question_uuid` VARCHAR(45) NOT NULL,
-    `answer_uuid` VARCHAR(45),
     `user_uuid` VARCHAR(45) NOT NULL,
     `content` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -39,6 +38,6 @@ CREATE TABLE `anime_forum`.`likes` (
    `id` INT NOT NULL AUTO_INCREMENT,
    `question_uuid` VARCHAR(45) NOT NULL,
    `user_uuid` VARCHAR(45) NOT NULL,
-   `value` SMALLINT NOT NULL DEFAULT 0,  -- -1 Dislike, 1 - Like, 0 - Neutral
+   `value` SMALLINT NOT NULL DEFAULT 0,
    PRIMARY KEY (`id`),
    UNIQUE KEY `unique_user_question` (`user_uuid`, `question_uuid`));

@@ -161,9 +161,6 @@
     font-style: italic;
 }
 
-
-/*-----------*/
-
 .back-button {
     background-color: transparent;
     color: #3b82f6;
@@ -227,12 +224,10 @@
     margin: 0;
 }
 
-/*/////////*/
-
 .vote-icon.upvote.active {
-    color: #b91c1c; /* tamsesnė raudona paspaudus */
+    color: #b91c1c;
 }
 
 .vote-icon.downvote.active {
-    color: #1e40af; /* mėlyna paspaudus */
+    color: #1e40af;
 }

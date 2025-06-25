@@ -23,7 +23,7 @@ export const updateQuestion = async (uuid, values) => {
         `/questions/${uuid}`,
         'PUT',
         values,
-        'Klausimas atnaujintas!',
+        'Question updated!',
         true);
 };
 
@@ -32,7 +32,7 @@ export const createQuestion = async (values) => {
         `/questions`,
         'POST',
         values,
-        'Klausimas sukurtas!',
+        'Question created!',
         true);
 };
 
@@ -41,6 +41,6 @@ export const deleteQuestion = async (uuid) => {
         `/questions/${uuid}`,
         'DELETE',
         null,
-        'Klausimas istrintas!',
+        'Question deleted!',
         true);
 };

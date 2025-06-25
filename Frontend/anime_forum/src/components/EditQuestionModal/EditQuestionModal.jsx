@@ -8,9 +8,9 @@ const EditQuestionModal = ({ isOpen, onClose, question }) => {
     if (!isOpen || !question) return null;
 
     const validationSchema = Yup.object({
-        title: Yup.string().required('Pavadinimas yra privalomas'),
-        content: Yup.string().required('Turinys yra privalomas'),
-        tags: Yup.string().required("Tag'ai yra privalomi"),
+        title: Yup.string().required('Name is required'),
+        content: Yup.string().required('Content is required'),
+        tags: Yup.string().required("Tags are required"),
     });
 
     const handleSubmit = async (values) => {
@@ -23,7 +23,7 @@ const EditQuestionModal = ({ isOpen, onClose, question }) => {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2>Redaguoti klausimą</h2>
+                <h2>Edit question</h2>
 
                 <Formik
                     initialValues={{
@@ -36,26 +36,26 @@ const EditQuestionModal = ({ isOpen, onClose, question }) => {
                 >
                     <Form>
                         <label>
-                            Pavadinimas:
+                            Title:
                             <Field type="text" name="title" className="form-input" />
                             <ErrorMessage name="title" component="div" className="error" />
                         </label>
 
                         <label>
-                            Turinys:
+                            Content:
                             <Field as="textarea" name="content" className="form-textarea" />
                             <ErrorMessage name="content" component="div" className="error" />
                         </label>
 
                         <label>
-                            Tag'ai:
+                            Tags:
                             <Field type="text" name="tags" className="form-input" />
                             <ErrorMessage name="tags" component="div" className="error" />
                         </label>
 
                         <div className="modal-buttons">
-                            <button type="button" onClick={onClose}>Atšaukti</button>
-                            <button type="submit">Saugoti</button>
+                            <button type="button" onClick={onClose}>Cancel</button>
+                            <button type="submit">Save</button>
                         </div>
                     </Form>
                 </Formik>

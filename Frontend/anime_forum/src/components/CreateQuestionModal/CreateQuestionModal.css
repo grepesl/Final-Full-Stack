@@ -1,5 +1,4 @@
 .padding-button {
-    /*padding-left: 50px;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +6,7 @@
 
 .create-question-button {
     padding: 10px 20px;
-    background-color: #e11d48; /* raudona */
+    background-color: #e11d48;
     color: white;
     border: none;
     border-radius: 8px;
@@ -95,12 +94,6 @@
 .cancel-button:hover {
     background-color: #d1d5db;
 }
-
-/*@media (min-width: 640px) {*/
-/*    .padding-button {*/
-/*        padding-left: 80px;*/
-/*    }*/
-/*}*/
 
 .form-group {
     margin-bottom: 16px;

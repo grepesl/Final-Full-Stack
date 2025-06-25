@@ -1,4 +1,3 @@
-// routes/userRoutes.js
 import {getAnswers, getAnswerById, createAnswer, updateAnswer, deleteAnswer} from '../controllers/answerController.js';
 import express from "express";
 import {authenticateToken} from "../Middlewares/authMiddleware.js";
