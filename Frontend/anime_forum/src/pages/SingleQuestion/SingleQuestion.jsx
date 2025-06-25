@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react'
-import {NavLink, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import './SingleQuestion.css';
-import EditQuestionModal from "../components/EditQuestionModal/EditQuestionModal.jsx";
-import EditAnswerModal from '../components/EditAnswerModal/EditAnswerModal.jsx';
+import EditQuestionModal from "../../components/EditQuestionModal/EditQuestionModal.jsx";
+import EditAnswerModal from '../../components/EditAnswerModal/EditAnswerModal.jsx';
 import { useNavigate } from 'react-router-dom';
-import EditedSymbol from "../components/EditedSymbol.jsx";
-import {deleteQuestion, getQuestionsById} from "../services/questionService.js";
-import {createAnswer, deleteAnswer, getAnswersByQuestion} from "../services/answerService.js";
-// import LikingCount from "../components/LikingCount.jsx";
-import {useAuth} from "../context/AuthContext.jsx";
-import {addReaction, getUserReaction} from "../services/likeService.js";
+import {deleteQuestion, getQuestionsById} from "../../services/questionService.js";
+import {createAnswer, deleteAnswer, getAnswersByQuestion} from "../../services/answerService.js";
+import {useAuth} from "../../context/AuthContext.jsx";
+import {addReaction, getUserReaction} from "../../services/likeService.js";
+import QuestionHeader from "../../components/QuestionHeader/QuestionHeader.jsx";
+import Answers from "../../components/Answers/Answers.jsx";
 
 const SingleQuestion = () => {
     const { question_id } = useParams();
@@ -20,7 +20,7 @@ const SingleQuestion = () => {
     const [editingQuestion, setEditingQuestion] = useState(null);
     const [answerContent, setAnswerContent] = useState('');
     const [userVote, setUserVote] = useState(null);
-    const { user, logout } = useAuth()
+    const {user} = useAuth()
 
     const navigate = useNavigate();
 
@@ -97,17 +97,15 @@ const SingleQuestion = () => {
         setEditingQuestion(null);
     }
 
-    // DELETE QUESTION
-
-    const handleDelete = async () => {
+    const handleDeleteQuestion = async () => {
         const response = await deleteQuestion(question.uuid);
         if (response.status === 200) {
             navigate('/')
         }
     };
 
-    const handleDeleteAnswer = async (index) => {
-        const response = await deleteAnswer(answers[index].uuid);
+    const handleDeleteAnswer = async (uuid) => {
+        const response = await deleteAnswer(uuid);
         if (response.status === 200) {
             await fetchAnswers();
         }
@@ -123,22 +121,16 @@ const SingleQuestion = () => {
 
     return (
         <div className="single-question-container">
-            <button className="back-button" onClick={() => window.history.back()}>
+            <button className="back-button" onClick={() => navigate(-1)}>
                 ← Back to Home
             </button>
 
-            <div className="question-header">
-                <span className="question-user">👤 {question.username}</span>
-                <EditedSymbol isNotEdited={question.updated_at === null} />
-                {user && user.uuid === question.user_uuid ? (
-                    <div className="question-actions">
-                        <button className="action-button" onClick={() => setIsModalOpen(true)}>Update</button>
-                        <button className="action-button" onClick={handleDelete}>Delete</button>
-                    </div>
-                ) : (
-                    ''
-                )}
-            </div>
+            <QuestionHeader
+                question={question}
+                user={user}
+                onEdit={() => setIsModalOpen(true)}
+                onDelete={handleDeleteQuestion}
+            />
 
             <h2 className="question-title">{question.title}</h2>
 
@@ -150,57 +142,30 @@ const SingleQuestion = () => {
                 ))}
             </ul>
 
-            <div className="question-meta">
+            <div className={`question-meta ${!user ? 'disabled' : ''}`}>
                 <div className="vote-box">
                     <i
                         className={`bi bi-caret-up-fill vote-icon upvote ${userVote === 'up' ? 'active' : ''}`}
-                        onClick={handleUpvote}
+                        onClick={user ? handleUpvote : undefined}
                     ></i>
                     <span className="vote-count">{question.likes_count ?? 0}</span>
                     <i
                         className={`bi bi-caret-down-fill vote-icon downvote ${userVote === 'down' ? 'active' : ''}`}
-                        onClick={handleDownvote}
+                        onClick={user ? handleDownvote : undefined}
                     ></i>
                 </div>
                 <span className="answers-count">💬 {question.answers_count}</span>
             </div>
 
-            <div className="answers-section">
-                <h3 className="answers-title">Atsakymai</h3>
-
-                {user ? (
-                    <div className="answer-form">
-                        <textarea placeholder="Įvesk atsakymą..." className="answer-input" value={answerContent} onChange={(e) => setAnswerContent(e.target.value)}></textarea>
-                        <button className="submit-button" onClick={handleAddAnswer}>Submit</button>
-                    </div>
-                ) : (
-                    ''
-                )}
-
-                {(answers === undefined || answers.length === 0) ? (
-                    <p className="no-answers">Šis klausimas kol kas neturi atsakymų.</p>
-                ) : (
-                    answers.map((answer, index) => (
-
-                        <div key={index} className="answer">
-                            <EditedSymbol isNotEdited={answer.updated_at === null} />
-                            <p className="answer-content">{answer.content}</p>
-                            <p className="answer-user">👤 {answer.username}</p>
-
-                            {user && user.uuid === answer.user_uuid ? (
-                                <div className="answer-actions">
-                                    <button className="answer-button" onClick={() => setEditingAnswer(answer)}>
-                                        Update
-                                    </button>
-                                    <button className="answer-button" onClick={() => handleDeleteAnswer(index)}>Delete</button>
-                                </div>
-                            ) : (
-                                ''
-                            )}
-                        </div>
-                    ))
-                )}
-            </div>
+            <Answers
+                user={user}
+                answers={answers}
+                answerContent={answerContent}
+                setAnswerContent={setAnswerContent}
+                handleAddAnswer={handleAddAnswer}
+                setEditingAnswer={setEditingAnswer}
+                handleDeleteAnswer={handleDeleteAnswer}
+            />
             <EditQuestionModal
                 isOpen={isModalOpen}
                 onClose={onEditQuestionClose}

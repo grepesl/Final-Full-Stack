@@ -5,7 +5,6 @@ import {changeReaction, getReactionByQuestion} from "../Controllers/likesControl
 const router = express.Router();
 
 router.post('/', authenticateToken, changeReaction);
-router.get('/:question_uuid', authenticateToken, getReactionByQuestion);
-
+router.get('/:id', authenticateToken, getReactionByQuestion);
 
 export default router;

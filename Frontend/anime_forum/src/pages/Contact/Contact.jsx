@@ -21,7 +21,6 @@ const Contact = () => {
                 <div className="contact-card">
                     <h2>🌐Social media</h2>
                     <p>Facebook <a href="#">Help Center</a></p>
-                    {/*<p><a href="#">Instagram Help Center</a></p>*/}
                 </div>
 
                 <div className="contact-card">

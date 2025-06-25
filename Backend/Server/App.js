@@ -1,22 +1,18 @@
-// app.js
 import express from 'express';
 import userRoutes from './routes/userRoutes.js';
 import questionRoutes from "./Routes/questionRoutes.js";
 import answerRoutes from "./Routes/answerRoutes.js";
 import authRoutes from "./Routes/authRoutes.js";
 import cors from 'cors';
-
 import dotenv from "dotenv";
 import likeRoutes from "./Routes/likeRoutes.js";
-
 dotenv.config();
 
 const app = express();
 
-app.use(express.json()); // For parsing JSON request bodies
+app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
-    //origin: '*',
+    origin: 'http://localhost:' + process.env.FRONTEND_PORT,
     credentials: true
 }));
 

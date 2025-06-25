@@ -1,10 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import './EditAnswerModal.css';
-import {safeRequest} from "../../services/apiService.js";
-import {deleteQuestion} from "../../services/questionService.js";
 import {updateAnswer} from "../../services/answerService.js";
 
 const EditAnswerModal = ({ answer, onClose }) => {
@@ -12,12 +9,11 @@ const EditAnswerModal = ({ answer, onClose }) => {
 
     const validationSchema = Yup.object({
         content: Yup.string()
-            .required('Atsakymo tekstas privalomas')
-            .min(5, 'Tekstas per trumpas'),
+            .required('Response text is required')
+            .min(5, 'Text too short'),
     });
 
     const handleSubmit = async (values) => {
-
         const response = await updateAnswer(answer.uuid, values);
         if (response.status === 200) {
             onClose(true)
@@ -27,7 +23,7 @@ const EditAnswerModal = ({ answer, onClose }) => {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2>Redaguoti atsakymą</h2>
+                <h2>Edit answer</h2>
 
                 <Formik
                     initialValues={{ content: answer.content }}
@@ -36,14 +32,14 @@ const EditAnswerModal = ({ answer, onClose }) => {
                 >
                     <Form>
                         <label>
-                            Atsakymo tekstas:
+                            Response text:
                             <Field as="textarea" name="content" className="form-textarea" />
                             <ErrorMessage name="content" component="div" className="error" />
                         </label>
 
                         <div className="modal-buttons">
-                            <button type="button" onClick={onClose}>Atšaukti</button>
-                            <button type="submit">Išsaugoti</button>
+                            <button type="button" onClick={onClose}>Cancel</button>
+                            <button type="submit">Save</button>
                         </div>
                     </Form>
                 </Formik>

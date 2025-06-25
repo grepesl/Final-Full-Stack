@@ -1,11 +1,4 @@
-// routes/userRoutes.js
-import {
-    getQuestions,
-    getQuestionById,
-    createQuestion,
-    updateQuestion,
-    deleteQuestion
-} from '../controllers/questionController.js';
+import {getQuestions, getQuestionById, createQuestion, updateQuestion, deleteQuestion} from '../controllers/questionController.js';
 import express from "express";
 import {authenticateToken} from "../Middlewares/authMiddleware.js";
 

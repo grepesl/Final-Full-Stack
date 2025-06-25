@@ -16,8 +16,6 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-
     const { id } = req.params
 
     try {
@@ -60,8 +58,8 @@ export const deleteUser = async (req, res) => {
             [id]
         );
 
-        res.status(200).json({ message: "Paskyra sėkmingai ištrinta." });
+        res.status(200).json({ message: "Account successfully deleted" });
     } catch (err) {
-        res.status(500).json({ message: "Serverio klaida", error: err });
+        res.status(500).json({ message: "Server error", error: err });
     }
 }

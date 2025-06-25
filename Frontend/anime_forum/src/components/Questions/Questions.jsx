@@ -5,42 +5,50 @@ import Pagination from "../Pagination/Pagination.jsx";
 import {getQuestions} from "../../services/questionService.js";
 import CreateQuestionModal from "../CreateQuestionModal/CreateQuestionModal.jsx";
 
+const postsPerPage = 2;
+const defaultPage = 1;
+
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
-    const [totalCount, setTotalCount] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 2;
+    const [totalCount, setTotalCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(defaultPage);
+
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        const fetchQuestions = async () => {
-            const params = new URLSearchParams(location.search);
+        const params = new URLSearchParams(location.search);
 
-            console.log(params);
-            // Jei nėra puslapio, nustatom default
-            if (!params.get('page')) params.set('page', currentPage);
-            if (!params.get('limit')) params.set('limit', postsPerPage);
+        const page  = parseInt(params.get('page'))  || defaultPage;
 
-            const response = await getQuestions(params.toString());
-            if (response.status === 200) {
-                setQuestions(response.questions);
-                setTotalCount(response.totalCount);
-            }
-        };
+        setCurrentPage(page);
         fetchQuestions();
     }, [location.search]);
+
+    const fetchQuestions = async () => {
+        const params = new URLSearchParams(location.search);
+        const response = await getQuestions(params.toString());
+        if (response.status === 200) {
+            setQuestions(response.questions);
+            setTotalCount(response.totalCount);
+        }
+    };
 
     const paginate = (pageNumber) => {
         const params = new URLSearchParams(location.search);
         params.set('page', pageNumber);
-        setCurrentPage(pageNumber)
+        params.set('limit', postsPerPage);
         navigate({ search: params.toString() });
-    }
+    };
 
     return (
         <div>
-            <CreateQuestionModal onClose={(isSccusess) => isSccusess ? paginate(1) : null} />
+            <CreateQuestionModal onClose={async (isSuccess) => {
+                if (isSuccess) {
+                    console.log("success");
+                    await fetchQuestions();
+                }
+            }} />
             <h1 className="forum-title">All Questions</h1>
             <div className="questions-container">
                 {questions.map((question) => (
@@ -64,7 +72,6 @@ const Questions = () => {
                     </div>
                 ))}
             </div>
-            {/*TODO kai paspaudi back numeta i 1 page o lieka info seno*/}
             <Pagination
                 filteredDataAmount={totalCount}
                 pageSize={postsPerPage}

@@ -36,7 +36,6 @@
     outline: none;
 }
 
-/* Desktop: horizontal layout */
 @media (min-width: 768px) {
     .filter-container {
         flex-direction: row;

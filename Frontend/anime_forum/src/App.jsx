@@ -2,9 +2,9 @@ import React from 'react'
 import {Route, Routes} from "react-router-dom";
 import Home from "./pages/Home/Home.jsx";
 import Login from "./pages/Login/Login.jsx";
-import Register from "./pages/Register.jsx";
+import Register from "./pages/Register/Register.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
-import SingleQuestion from "./pages/SingleQuestion.jsx";
+import SingleQuestion from "./pages/SingleQuestion/SingleQuestion.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import Contact from "./pages/Contact/Contact.jsx";

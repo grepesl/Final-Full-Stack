@@ -13,8 +13,8 @@
     padding: 30px 20px;
     font-size: 14px;
     border-top: 1px solid #ddd;
-    width: 100%; /* kad neatsirastų horizontalus scrollas */
-    box-sizing: border-box; /* apsaugo nuo scroll bug'o */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .footer-container {
@@ -25,9 +25,6 @@
     max-width: 1000px;
     margin: 0 auto;
 }
-
-/* ...kitas tavo footer css gali likti */
-
 
 .footer-section {
     text-align: center;

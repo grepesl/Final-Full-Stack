@@ -3,19 +3,16 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import './EditProfileModal.css';
 import {updateUser} from "../../services/userService.js";
-import {useAuth} from "../../context/AuthContext.jsx";
 
 const EditProfileModal = ({ user, onClose }) => {
 
-    const { updateAuthUser } = useAuth();
-
     const validationSchema = Yup.object({
         username: Yup.string()
-            .min(5, 'Vartotojo vardas per trumpas')
-            .required('Privalomas laukas'),
+            .min(5, 'Username is too short')
+            .required('Required field'),
         email: Yup.string()
-            .email('Neteisingas el. pašto formatas')
-            .required('Privalomas laukas'),
+            .email('Invalid email format')
+            .required('Required field'),
     });
 
     const handleSubmit = async (values) => {
@@ -28,7 +25,7 @@ const EditProfileModal = ({ user, onClose }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h3>Redaguoti profilį</h3>
+                <h3>Edit profile</h3>
 
                 <Formik
                     initialValues={{
@@ -57,8 +54,8 @@ const EditProfileModal = ({ user, onClose }) => {
                             <ErrorMessage name="email" component="div" className="error" />
 
                             <div className="modal-actions">
-                                <button type="button" onClick={onClose}>Atšaukti</button>
-                                <button type="submit">💾 Išsaugoti</button>
+                                <button type="button" onClick={onClose}>Cancel</button>
+                                <button type="submit">💾 Save</button>
                             </div>
                         </Form>
                     )}

@@ -1,7 +1,5 @@
-// controllers/userController.js
 import database from './../database.js';
 import {v4 as generateID} from "uuid";
-import bcrypt from "bcrypt";
 
 export const getAnswers = async (req, res) => {
     const { question_uuid } = req.query
@@ -27,7 +25,6 @@ export const getAnswers = async (req, res) => {
             answers: rows,
         });
     } catch (err) {
-        // console.error(err);
         res.status(500).json({
             status: 500,
             message: err,
@@ -65,7 +62,6 @@ export const createAnswer = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        // console.log(err);
 
         res.status(500).json({status: 500, message: err });
     }
@@ -83,7 +79,6 @@ export const updateAnswer = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        // console.log(err);
 
         res.status(500).json({ message: err });
     }
@@ -101,6 +96,6 @@ export const deleteAnswer = async (req, res) => {
 
         res.status(200).json({ status: 200 });
     } catch (err) {
-        res.status(500).json({ message: "Serverio klaida", error: err });
+        res.status(500).json({ message: "Server error", error: err });
     }
 }

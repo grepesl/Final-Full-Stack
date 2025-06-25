@@ -13,14 +13,13 @@ const QuestionFilter = () => {
             newParams.set(key, value);
         }
         newParams.set('page', '1');
-        //console.log(newParams);
         setSearchParams(newParams);
     };
 
     return (
         <section className="filter-container">
             <div className="filter-group">
-                <label htmlFor="status-filter">Atsakymai</label>
+                <label htmlFor="status-filter">Answers</label>
                 <select
                     id="status-filter"
                     value={searchParams.get('is_answered') || 'all'}
@@ -35,20 +34,20 @@ const QuestionFilter = () => {
                         )
                     }
                 >
-                    <option value="all">Visi</option>
-                    <option value="answered">Atsakyti</option>
-                    <option value="unanswered">Neatsakyti</option>
+                    <option value="all">All</option>
+                    <option value="answered">Answered</option>
+                    <option value="unanswered">Not Answered</option>
                 </select>
             </div>
 
             <div className="filter-group">
-                <label htmlFor="title-filter">Pavadinimas</label>
+                <label htmlFor="title-filter">Title</label>
                 <input
                     type="text"
                     id="title-filter"
                     value={searchParams.get('name') || ''}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    placeholder="Ieškoti pavadinimo..."
+                    placeholder="Search for a title..."
                 />
             </div>
 
@@ -59,37 +58,23 @@ const QuestionFilter = () => {
                     id="tag-filter"
                     value={searchParams.get('tag') || ''}
                     onChange={(e) => handleChange('tag', e.target.value)}
-                    placeholder="pvz. anime, veiksmas..."
+                    placeholder="e.g. anime"
                 />
             </div>
 
-            {/*<div className="filter-group">*/}
-            {/*    <label htmlFor="sort-date">Data</label>*/}
-            {/*    <select*/}
-            {/*        id="sort-date"*/}
-            {/*        value={searchParams.get('sort_by_date') || 'ASC'}*/}
-            {/*        onChange={(e) => handleChange('sort_by_date', e.target.value)}*/}
-            {/*    >*/}
-            {/*        <option value="DESC">Naujausi</option>*/}
-            {/*        <option value="ASC">Seniausi</option>*/}
-            {/*    </select>*/}
-            {/*</div>*/}
-
             <div className="filter-group">
-                <label htmlFor="sort-questions">Rikiuoti pagal</label>
+                <label htmlFor="sort-questions">Sort by</label>
                 <select
                     id="sort-questions"
                     value={searchParams.get('sorting_type') || 'date-desc'}
                     onChange={(e) => handleChange('sorting_type', e.target.value)}
                 >
-                    <option value="date-desc">Data: Naujausi</option>
-                    <option value="date-asc">Data: Seniausi</option>
-                    <option value="answer-desc">Atsakymų: Daugiausia</option>
-                    <option value="answer-asc">Atsakymų: Mažiausia</option>
+                    <option value="date-desc">Date: Latest</option>
+                    <option value="date-asc">Date: The oldest</option>
+                    <option value="answer-desc">Answers: Most</option>
+                    <option value="answer-asc">Answers: Lowest</option>
                 </select>
             </div>
-
-
         </section>
     );
 };

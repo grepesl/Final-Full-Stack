@@ -2,11 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './Login.css';
-import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import { useAuth } from '../../context/AuthContext.jsx';
-import bcrypt from 'bcryptjs';
-import {getQuestionsById} from "../../services/questionService.js";
 import {loginUser} from "../../services/authService.js";
 
 const Login = () => {
@@ -21,20 +18,15 @@ const Login = () => {
         validationSchema: Yup.object({
             email: Yup.string()
                 .email('Invalid email')
-                .required('El. paštas privalomas'),
+                .required('Email required'),
             password: Yup.string()
-                .required('Slaptažodis privalomas'),
+                .required('Password required'),
         }),
         onSubmit: async (values) => {
                 const response = await loginUser(values.email, values.password);
                 if (response.status === 200) {
-                    // Saugoma į localStorage
-                    localStorage.setItem('token', response.jwt);
-                    localStorage.setItem('user', JSON.stringify(response.user));
-                    console.log('user logged in');
-                    console.log(localStorage.getItem('user'));
                     // Nustatoma user globaliam kontekste
-                    setUser(response.user);
+                    setUser(response.user, response.jwt);
                     setTimeout(() => navigate('/'), 1000);
                 }
         }

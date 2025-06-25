@@ -29,12 +29,12 @@ export const apiRequest = async (
         console.log(data);
 
         if (!response.ok) {
-            throw new Error(data.message || 'Įvyko klaida');
+            throw new Error(data.message || 'An error occurred');
         }
 
         return data;
     } catch (error) {
-        console.error('API klaida:', error);
+        console.error('API error:', error);
         throw error;
     }
 };
@@ -45,6 +45,6 @@ export const safeRequest = async (endpoint, method, body = null, successMessage 
         if (successMessage) toast.success(successMessage);
         return data;
     } catch (error) {
-        toast.error(error.message || 'Serverio klaida');
+        toast.error(error.message || 'Server error');
     }
 };

@@ -12,15 +12,13 @@ const Profile = () => {
     const onEditModalClose = async (isSuccess) => {
         if (isSuccess){
             const response = await getUserById(user.uuid);
-            console.log(response);
             updateAuthUser(response.user);
         }
-
         setIsModalOpen(false);
     }
 
     if (!user) {
-        return <p>Kraunama...</p>;
+        return <p>Loading...</p>;
     }
 
     return (
