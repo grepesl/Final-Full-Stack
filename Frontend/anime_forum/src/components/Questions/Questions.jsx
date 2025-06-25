@@ -5,7 +5,7 @@ import Pagination from "../Pagination/Pagination.jsx";
 import {getQuestions} from "../../services/questionService.js";
 import CreateQuestionModal from "../CreateQuestionModal/CreateQuestionModal.jsx";
 
-const postsPerPage = 2;
+const postsPerPage = 4;
 const defaultPage = 1;
 
 const Questions = () => {
