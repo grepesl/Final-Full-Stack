@@ -38,7 +38,6 @@ const Navbar = () => {
             </nav>
 
             <div className="nav-icons">
-                <img src={assets.search_icon} alt="Search" className="icon" />
 
                 <div className="profile-dropdown">
                     <img src={assets.profile_icon} alt="Profile" className="icon" />
